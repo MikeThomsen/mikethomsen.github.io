@@ -1,5 +1,5 @@
 - title: "feed"
-  href: "https://chrisanthropic.github.io/slim-pickins-jekyll-theme/atom.xml"
+  href: "https://mikethomsen.github.io/atom.xml"
 
 - title: "googleplus"
   href: "#"
@@ -14,7 +14,5 @@
   href: "https://twitter.com/"
 
 - title: "github"
-  href: "https://github.com/chrisanthropic/slim-pickins-jekyll-theme"
+  href: "https://github.com/MikeThomsen"
 
-- title: "linkedin"
-  href: "https://www.linkedin.com/in/ctarwater"
