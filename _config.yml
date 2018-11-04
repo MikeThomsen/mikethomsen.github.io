@@ -1,43 +1,58 @@
-# Jekyll configuration
+# Site settings
+name: Mike Thomsen's Blog 
+email: 
+author: Mike Thomsen
 
-name: My blog
-description: Random commentary about software development
+keywords: jekyll, jekyll theme, jekyll framework, stuffthings
+description: Witty description here.
 
-# url is currently only used only for the RSS feed in feed.xml
-url: https://mikethomsen.github.io
+# Only use this if you are serving your site via Github Pages
+github:
+  url: "https://mikethomsen.github.io"
 
-# baseurl will often be '', but for a project page on gh-pages, it needs to
-# be the project name.
-# *** IMPORTANT: If your local "jekyll serve" throws errors change this to '' or
-#     run it like so: jekyll serve --baseurl=''
-#baseurl: /jekyll-clean
+header: no
+header_sm: images/banner-small.jpg
+header_med: images/banner-med.jpg
+header_large: images/banner-large.jpg
+header_xl: images/banner-xl.jpg
 
-# These can be '' to hide the Github or Gitlab nav buttons
-github: 'MikeThomsen'
-gitlab: ''
 
-# Set this to your UA-# value, or '' to disable the block completely
-gaaccount: ''
+# Exclude our ruby stuff
+exclude: [.bundle, bin, vendor, Gemfile, Gemfile.lock, Rakefile, s3_website.yml, .last_optimized]
 
-# The 'comments' setting enables comments. You'll need to select either
-# disqus or isso below to choose a comment system. Individual posts can
-# override 'comments' to disable on a post-by-post basis.
-comments: true
 
-# Set this to your public isso URL to enable comments via isso. Set to '' to disable isso.
-isso: ''
-
-# Set this to your disqus shortname to enable comments via disqus. Set to '' to disable disqus.
-disqus: ''
-
-permalink: /:year/:month/:title
-paginate: 3
-
-highlighter: rouge
+# Build settings
 markdown: kramdown
-gems: ['jekyll-paginate']
+kramdown:
+  input: GFM
 
-exclude: ['README.md', 'LICENSE']
+destination: _site
 
-plugins:
-  - jekyll-sitemap
+gems:
+  - jekyll-feed
+
+feed:
+  path: atom.xml
+  
+# Compress our Css
+#sass:
+#    style: :compressed
+
+permalink: /:year/:title
+
+#### SEO Stuff
+# Google Analytics
+google_universal_analytics: 
+google_universal_analytics_cookiedomain: auto
+
+# Facebook Opengraph
+facebook_user:
+facebook_app_id:                      #enter your App ID
+facebook_locale: en_US
+facebook_page:                        #the URL of your Facebook Page
+facebook_image:                       #enter a default image (at least 200x200px) to use here for posts/pages that don't have one.
+
+# Twitter Cards
+twitter_user: 
+twitter_card: true
+twitter_image:                        #enter a default image (at least 200x200px) to use here for posts/pages that don't have one.

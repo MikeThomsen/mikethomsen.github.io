@@ -1,200 +1,179 @@
-Jekyll Clean
-============
-
-* Get it from [github](https://github.com/scotte/jekyll-clean).
-* See the [live demo](https://scotte.github.io/jekyll-clean).
-* See it [in action on my own blog](https://scotte.org).
-
-A simple and clean Jekyll theme using [bootstrap](http://getbootstrap.com)
-(not to be confused with jekyll-bootstrap) that's easy to modify and very
-modular in component and element reuse.
-
-It uses Disqus for comments and includes Google Analytics support. Both of
-these features are disabled by default and can be enabled via \_config.yml. You
-can also rip this code out of the templates if you like (footer.html and post.html).
-The beauty of Jekyll - keep things clean... Jekyll Clean!
-
-The theme works well on mobile phones, using a collapsable nav bar and hiding the
-sidebar. The links pane in the sidebar is available on mobile through the nav menu,
-and you can do the same thing for any other sections added to the sidebar.
-
-Don't forget to occassionally merge against my upstream repository so you can get
-the latest changes. Pull requests are encouraged and accepted!
-
-Installation
-============
-
-If you don't have a blog already on github, start by cloning this repository.
-Best to do that directly on github and then clone that down to your computer.
-
-If you already do have a blog, You can certainly apply this theme to your existing
-blog in place, but then you won't be able to merge as the theme changes. If you
-re-apply your blog history on top of this theme's **gh-pages** branch, it's then
-easy to update to the latest version of the theme. You also don't want to have to
-deal with resolving old conflicts from your existing history, so you may wish to to
-push your existing master off to a new branch so you have the old history and start
-a new branch with this as the start, merging in your \_posts and other assets (after
-git rm'ing the current \_posts.
-
-Not ideal, but you have to make a choice - either apply it manually or base your
-blog off this theme's branch. Either way it will work, and both have their own
-pros and cons.
-
-You can setup an upstream tracking repository like so:
-
-```
-$ git remote add upstream git@github.com:scotte/jekyll-clean.git
-```
-
-And now when you wish to merge your own branch onto the latest version of the
-theme, simply do:
-
-```
-$ git fetch upstream
-$ git merge upstream/gh-pages
-```
-
-Of course you will have to resolve conflicts for \_config.yml, \_includes/links-list.html,
-and \_posts, and so on, but in practice this is pretty simple.
-
-This is how I maintain my own blog which is based on this theme. The old history is
-sitting in an **old-master** branch that I can refer to when I need to.
-
-Running Locally
-===============
-
-Here's the exact set of packages I need to install on Debian to run jekyll
-locally with this theme for testing.
-
-```
-$ sudo aptitude install ruby ruby-dev rubygems nodejs
-$ sudo gem install jekyll jekyll-paginate
-```
-
-And then it's just a simple matter of running jekyll locally:
-
-```
-$ jekyll serve --baseurl=''
-```
-
-Now browse to http://127.0.0.1:4000
-
-Using gh-pages
-==============
-
-Running a jekyll site is a bit outside the scope of this doc, but
-sometimes it can be a bit confusing how to configure jekyll for
-project pages versus user pages, for example.
-
-To start with, read through
-[the documentation here](https://help.github.com/articles/user-organization-and-project-pages/).
-This will provide a good overview on how it all works. The git branch and
-baseurl (in _config.yml) will change depending on the sort of site deployed.
-
-When you clone this repository, it's set up for project pages, so the
-deployed branch is "gh-pages" and baseurl is configured to 'jekyll-clean',
-because that's the name of this project.
-
-If you plan to deploy this as user pages, the deployed branch is "master"
-and baseurl is configured to '' (i.e. empty).
-
-Using Gitlab Pages
-==================
-
-A basic .gitlab-ci.yml is provided with this project.
-
-Comment Systems
-===============
-
-Jekyll clean supports both [isso](https://posativ.org/isso) and
-[disqus](https://disqus.com) comment systems.
-
-After enabling **comments**, either **isso** or **disquss** must
-be configured. Don't try configuring both!
-
-Isso Comments
+slim-pickins-jekyll-theme
 =============
 
-Isso requires running a local server, so is not suitable for hosting
-in github pages, for example. Isso is open source and keeps all your
-data local, unlike Disqus (who knows exactly what they are doing with
-your data).
+## NOTICE
+This repo is no longer maintained. I'm happy to approve pull requests but I'm not personally working on this theme any longer, it has been replaced by my [Slim Pickins Hugo Theme](https://github.com/chrisanthropic/slim-pickins-hugo-theme)
+------------------
 
-In _config.yml you'll need to set **isso** to the fully-qualified URL
-if your isso server (this is the value for **data-isso** passed to the
-isso JS). Make sure **comments** is true.
+Live Demo [HERE](http://chrisanthropic.github.io/slim-pickins-jekyll-theme/)
 
-Disqus Comments
-===============
+Slim Pickins is what I consider to be a minimal 'core' theme with everything I need to quickly develop new themes for Jekyll.
 
-Getting Disqus to work can be a bit more work than it seems like it should be.
-Make sure your Disqus account is correctly configured with the right domain
-of your blog and you know your Disqus shortname.
+## Basic features include:
 
-In _config.yml you'll need to set **disqus** to your Disqus shortname and
-make sure **comments** is true.
+* Jekyll 3.0 compatible
+* SASS
+* Minimal Zurb Foundation 6 Integration
+    * Responsive grid
+    * Visibility classes
+* Responsive navigation
+* Optional full-width banner
+* Sticky footer
+* **Javascript free**
+* Custom Rakefile with tasks for deploying and notifying search engines about updates
+* image_optim plugin to optimize all images
+* Basic SEO
 
-Finally, in posts, make sure you have **comments: true** in the YAML front
-matter.
+### SASS
+Includes the following variables:
 
-More information on using Disqus with Jekyll is
-[documented here](https://help.disqus.com/customer/portal/articles/472138-jekyll-installation-instructions).
+**Base Colors**
+* $primary-color
+* $secondary-color
+* $complimentary-color
+* $body-bg
+* $body-font-color
 
-Code Syntax Highlighting
-========================
+**Links**
+* link-color
+* link-hover-color
+* link-visited-color
 
-To use code syntax highlighting, use the following syntax:
+**Text**
+* $base-font-family
+* $base-font-size
+* $small-font-size
+* $base-line-height
+
+**Navbar Settings**
+* $navbar-height
+* $navbar-color
+* $navbar-text-color
+* $navbar-hover-color
+* $navbar-active-color
+* $navbar-font-size
+* $navbar-font-family
+
+**Socials Navbar Settings**
+* $socials-font-color
+* $socials-font-size
+
+**Utility**
+* $spacing-unit
+
+**Footer**
+* $footer-height
+* $footer-color
+
+### GRID
+Uses minimal sass from Zurb Foundation:
+
+* [grid](http://foundation.zurb.com/sites/docs/grid.html)
+
+### NAVIGATION
+A fully responsive navigation bar with the following features:
+
+* 2 navigation areas
+  * Left - Primary navigation 
+  * Right - Social media links
+* Both navigation areas are populated using Jekyll 'data' files, nav.yml and socials.yml respectively
+* Ability to create 'external' links that link offsite while still using socials.yml to do so
+* Easily customizable text, link, and background colors using the supplied sass variables
+
+### BANNER
+This theme is configured with a 'wrap' of 1920px so banner images look best at that width.
+
+First it checks a pages yaml frontmatter for the header image, if none is found then it checks for a site-wide default in your config.yml, if none is found then no banner image is displayed.
+
+**Site-Wide**
+You can set a site-wide default banner image by adding the following to your _config.yml:
+  `header_image: "path/to/image.jpg"`
+
+**Per Page**
+You can also override it per page by adding the following code to a pages yaml front matter:
+  `header_image: path/to/image.jpg`
+
+### STICKY FOOTER
+I like my footers to stay on the bottom of the page no matter what. You can easily edit the size and color using the supplied sass variables.
+
+### JAVASCRIPT FREE
+The only thing in the theme that uses Javascript is the optional use of google analytics.
+
+### RAKEFILE
+Includes the following custom tasks:
+
+* *notify* - pings google and bing to notify them about changes to the site/sitemap
+
+These tasks have been bundled into custom build and deploy tasks
+
+* *build* - runs `jekyll build` followed by `minify_html`
+* *deploy* - runs `s3_website push` and then `notify`
+
+### IMAGE_OPTIM PLUGIN
+
+* Custom [image_optim](https://github.com/chrisanthropic/image_optim-jekyll-plugin) plugin will optimize all images in the /images folder and any subdirectories
+  * Uses the original [image_optim](https://github.com/toy/image_optim)
+* Cache file is created on the first run so that only updated/new images are optimized
+
+### BASIC SEO
+
+* Google Analytics*
+  * *Uses Javascript
+  * just add your `google_universal_analytics ID` to the _config.yml file.
+* Facebook Open Graph
+  Fill out the following in your config.yml
+
+  ```
+    facebook_app_id:                      #enter your App ID
+    facebook_locale: en_US
+    facebook_page:                        #the URL of your Facebook Page
+    facebook_image:			#enter a default image (at least 200x200px) to use here for posts/pages that don't have one.	
+  ```
+
+* Twitter Cards
+  Fill out the following in your config.yml
+
+  ```
+    twitter_user: 
+    twitter_card: true
+    twitter_image: 			 #enter a default image (at least 200x200px) to use here for posts/pages that don't have one.
+  ```
+
+* Sitewide description/keywords
+  * Edit the description in your config.yml and it will be used as the default description in the metadata for every page/post.
+  * Add `Keywords: some, bunch, of random keywords` to your config.yml and it will be used as the default keywords in the metadata for every post/page.
+  * Set specific keywords per page/post (override the sitewide defaults) by adding them to the front matter of any page/post.
+    * Example:
 
 ```
-```python
-import random
-
-# Roll the die
-roll = random.randint(1, 20)
-print('You rolled a %d.' % roll)
-``` #REMOVE
+---
+Title: Example Post
+Description: Some Yaml Frontmatter to show what's what.
+Keywords: Example, Zim, this is only a test
+---
 ```
 
-(Remove #REMOVE from the end of the last line). Which will look like this in
-the rendered jekyll output using the default css/syntax.css provided with this
-theme (which is the **colorful** theme from [https://github.com/iwootten/jekyll-syntax](https://github.com/iwootten/jekyll-syntax)):
+## Basic Use
+For now it's best to start fresh or install the them and then transfer over any old files (posts, images, etc) from your old site.
 
-```python
-import random
+* Git clone this repo, cd into the directory and run `bundle install --binstubs --path=vendor` to install the required dependencies.
+* Edit your config.yml file
+  * Change the title and description at a minimum.
+* Update your navigation 
+  * edit the `_data/nav.yml` file as needed
+* Update your social links
+  * edit the `_data/socials.yml` file as needed
 
-# Roll the die
-roll = random.randint(1, 20)
-print('You rolled a %d.' % roll)
-```
+## Deploying
+I use S3 to host my site and the [s3_website](https://github.com/laurilehmijoki/s3_website) plugin to deploy, if you don't do both of these, delete the `s3_website.yml` file and edit the deploy raketask to fit your needs.
 
-NOTE: The example in this README.md will render differently than in the
-final jekyll output. See the [live demo](https://scotte.github.io/jekyll-clean)
-to see how it really looks.
+If you plan on using S3 make sure you edit the configs:
 
-You can, of course, use any theme you wish, see the jekyll and pygments
-documentation for more details.
+* FIRST - add the s3_website.yml file to your gitignore so your credentials don't end up on the web.
+* s3_website.yml
+  * add your `s3_id`. `s3_secret`, and `s3_bucket`
+* Update the Rakefile notify task to use your url
+  * replace `site = "www.YOUR-URL.com"` with your actual url.
 
-License
-=======
-
-The content of this theme is distributed and licensed under a
-![License Badge](/images/cc_by_88x31.png)
-[Creative Commons Attribution 4.0 License](https://creativecommons.org/licenses/by/4.0/legalcode)
-
-    This license lets others distribute, remix, tweak, and build upon your work,
-    even commercially, as long as they credit you for the original creation. This
-    is the most accommodating of licenses offered. Recommended for maximum
-    dissemination and use of licensed materials.
-
-In other words: you can do anything you want with this theme on any site, just please
-provide a link to [the original theme on github](https://github.com/scotte/jekyll-clean)
-so I get credit for the original design. Beyond that, have at it!
-
-This theme includes the following files which are the properties of their
-respective owners:
-
-* js/bootstrap.min.js - [bootstrap](http://getbootstrap.com)
-* css/bootstrap.min.css - [bootstrap](http://getbootstrap.com)
-* js/jquery.min.js - [jquery](https://jquery.com)
-* images/cc_by_88x31.png - [creative commons](https://creativecommons.org)
-* css/colorful.css - [iwootten/jekyll-syntax](https://github.com/iwootten/jekyll-syntax)
+## MISC.
+The blog posts included are duplicated from my actual blog and are the documentation of how I created this theme. From starting with a fresh Jekyll installation to the final product.
