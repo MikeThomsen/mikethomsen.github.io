@@ -38,3 +38,6 @@ markdown: kramdown
 gems: ['jekyll-paginate']
 
 exclude: ['README.md', 'LICENSE']
+
+plugins:
+  - jekyll-sitemap
