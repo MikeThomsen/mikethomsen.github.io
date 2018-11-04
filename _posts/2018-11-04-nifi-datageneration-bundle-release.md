@@ -1,3 +1,6 @@
+---
+title: NiFi Data Generation Bundle 1.8.0 Released
+---
 Data generation bundle has been updated to support NiFi 1.8.0. The GenerateRecord processor now supports expression language, enabling scenarios like this:
 
 ```
