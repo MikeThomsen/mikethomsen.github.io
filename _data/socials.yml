@@ -1,17 +1,17 @@
 - title: "feed"
   href: "https://mikethomsen.github.io/atom.xml"
 
-- title: "googleplus"
-  href: "#"
+# - title: "googleplus"
+#   href: "#"
 
-- title: "facebook"
-  href: "#"
+# - title: "facebook"
+#   href: "#"
   
-- title: "tumblr"
-  href: "#"
+# - title: "tumblr"
+#   href: "#"
   
-- title: "twitter"
-  href: "https://twitter.com/"
+# - title: "twitter"
+#   href: "https://twitter.com/"
 
 - title: "github"
   href: "https://github.com/MikeThomsen"
