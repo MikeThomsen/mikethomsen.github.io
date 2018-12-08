@@ -10,7 +10,7 @@ If you find yourself in a situation like this, these are some things to explain 
 
 ### Use Descriptive, Non-Duplicated Headers
 
-The first line of a good Excel document that can be easily adapted should be a header line with no gaps between the fields, and each column header should be a good and descriptive name. There's no need to abbreviate. "First Name" and "FirstName" are fine for a person's first name, no need to keep it short like "fname."
+The first line of a good Excel document that can be easily adapted should be a header line with no gaps between the fields, and each column header should be a good and descriptive name. There's no need to abbreviate. `First Name` and `FirstName` are fine for a person's first name, no need to keep it short like `fname`.
 
 It's important to also let them know that if they duplicate a header name, you won't be able to easily make it work for them. What you'll have to do is intercept the CSV output from `ConvertExcelToCsv` and rewrite the header line. This is one of the reasons why descriptive headers are better; descriptive headers are less likely to be duplicated.
 
