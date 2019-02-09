@@ -1,3 +1,6 @@
+---
+title: Setting Up JanusGraph Locally (with HBase)
+---
 # Setting Up JanusGraph Locally
 
 ## Setup HBase
