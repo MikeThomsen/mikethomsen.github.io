@@ -44,3 +44,5 @@ If you load the spreadsheet with `GetFile`, you'll see output that looks like th
 ![Flow view](/post_assets/2019-02-09-executestreamprocessor/Flow View.png)
 
 ![JSON data](/post_assets/2019-02-09-executestreamprocessor/Data View.png)
+
+Download flow template [here](/post_assets/2019-02-09-executestreamprocessor/Excel_Example.xml)
