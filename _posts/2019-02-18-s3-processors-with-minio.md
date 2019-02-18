@@ -26,4 +26,4 @@ At that point, you can connect with your browser and create a bucket.
 
 Now all you have to do is drag one or more S3 processors onto the NiFi canvas and configure them with the bucket name, secret key, access key and then set the "Endpoint Override URL" to the Endpoint value that is printed out in the console.
 
-[!PutS3 Configuration](/post_assets/2019-02-18-s3-processors-with-minio/puts3.png)
+![PutS3 Configuration](/post_assets/2019-02-18-s3-processors-with-minio/puts3.png)
