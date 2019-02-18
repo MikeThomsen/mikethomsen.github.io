@@ -54,7 +54,7 @@ feed:
 #sass:
 #    style: :compressed
 
-permalink: /:year/:title
+permalink: /:year/:month/:title
 
 #### SEO Stuff
 # Google Analytics
