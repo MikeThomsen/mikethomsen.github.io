@@ -2,7 +2,7 @@
 title: Using the S3 Processors with Minio
 ---
 
-Minio is a small S3-compatible server that can be really useful for internal use. To set it up with NiFi, download it an run it with this command:
+[Minio](https://minio.io/) is a small S3-compatible server that can be really useful for internal use. To set it up with NiFi, [download](https://minio.io/downloads.html) it an run it with this command:
 
 ```
 ./minio server ./minio_data
