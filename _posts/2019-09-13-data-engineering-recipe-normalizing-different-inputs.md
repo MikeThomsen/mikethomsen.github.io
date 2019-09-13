@@ -1,4 +1,5 @@
 ---
+date: 2019-09-13 08:50:00
 title: Data Engineering Recipe: Normalizing different input files with minimal code
 ---
 
