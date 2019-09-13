@@ -1,6 +1,6 @@
 ---
 date: 2019-09-13 08:50:00
-title: Data Engineering Recipe: Normalizing different input files with minimal code
+title: "Data Engineering Recipe: Normalizing different input files with minimal code"
 ---
 
 > Scenario: you get CSV files that relate to the same problem domain, but they have different headers.
