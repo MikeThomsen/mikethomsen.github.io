@@ -1,0 +1,160 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="/theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="/theme/pygments/github.min.css">
+
+
+  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/solid.css">
+
+
+
+
+
+
+
+<meta name="author" content="Mike Thomsen" />
+<meta name="description" content="It&#39;s very common in many situations for data engineers and others working with an organization&#39;s data to run into one or more situations where the data is delivered by people who just load it up in a spreadsheet and send it over. In most cases, they don&#39;t know better and …" />
+<meta name="keywords" content="">
+
+
+<meta property="og:site_name" content="Mike Thomsen's Blog"/>
+<meta property="og:title" content="Using Excel with Apache NiFi to make user data exchanges easier"/>
+<meta property="og:description" content="It&#39;s very common in many situations for data engineers and others working with an organization&#39;s data to run into one or more situations where the data is delivered by people who just load it up in a spreadsheet and send it over. In most cases, they don&#39;t know better and …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="/using-excel-with-apache-nifi-to-make-user-data-exchanges-easier.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2018-12-08 00:00:00-05:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="/author/mike-thomsen.html">
+<meta property="article:section" content="misc"/>
+<meta property="og:image" content="">
+
+  <title>Mike Thomsen's Blog &ndash; Using Excel with Apache NiFi to make user data exchanges easier</title>
+
+</head>
+<body class="light-theme">
+  <aside>
+    <div>
+      <a href="">
+        <img src="/theme/img/profile.png" alt="" title="">
+      </a>
+
+      <h1>
+        <a href=""></a>
+      </h1>
+
+
+
+      <nav>
+        <ul class="list">
+
+
+
+            <li>
+              <a target="_self" href="https://getpelican.com/" >Pelican</a>
+            </li>
+            <li>
+              <a target="_self" href="https://www.python.org/" >Python.org</a>
+            </li>
+            <li>
+              <a target="_self" href="https://palletsprojects.com/p/jinja/" >Jinja2</a>
+            </li>
+            <li>
+              <a target="_self" href="#" >You can modify those links in your config file</a>
+            </li>
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-You can add links in your config file" href="#" target="_blank">
+              <i class="fab fa-You can add links in your config file"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-Another social link" href="#" target="_blank">
+              <i class="fab fa-Another social link"></i>
+            </a>
+          </li>
+      </ul>
+    </div>
+
+  </aside>
+  <main>
+
+
+<article class="single">
+  <header>
+      
+    <h1 id="using-excel-with-apache-nifi-to-make-user-data-exchanges-easier">Using Excel with Apache NiFi to make user data exchanges easier</h1>
+    <p>
+      Posted on Sat 08 December 2018 in <a href="/category/misc.html">misc</a>
+
+    </p>
+  </header>
+
+
+  <div>
+    <p>It's very common in many situations for data engineers and others working with an organization's data to run into one or more situations where the data is delivered by people who just load it up in a spreadsheet and send it over. In most cases, they don't know better and also don't have any tools that make the process better for them either. They're just doing the best they can with what they know and are given.</p>
+<p>Fortunately, NiFi is more than capable of handling these users and use cases thanks to the <code>ConvertExcelToCsv</code> processor. It can even maintain the formatting of Excel cells to a degree, such as converting the internal representation of a date to whatever string format was specified for its formatting.</p>
+<p>If you find yourself in a situation like this, these are some things to explain to the users that will make it much easier for them to work with you.</p>
+<h3>Use Descriptive, Non-Duplicated Headers</h3>
+<p>The first line of a good Excel document that can be easily adapted should be a header line with no gaps between the fields, and each column header should be a good and descriptive name. There's no need to abbreviate. <code>First Name</code> and <code>FirstName</code> are fine for a person's first name, no need to keep it short like <code>fname</code>.</p>
+<p>It's important to also let them know that if they duplicate a header name, you won't be able to easily make it work for them. What you'll have to do is intercept the CSV output from <code>ConvertExcelToCsv</code> and rewrite the header line. This is one of the reasons why descriptive headers are better; descriptive headers are less likely to be duplicated.</p>
+<h3>Do Not Explain The Data</h3>
+<p>Explanatory notes about the data should never be in the document, be it in a cell or a column header. If explanation is needed, just communicate it separately. Tell them that you appreciate them trying to clarify things, but the notes will just be confused for bad records.</p>
+<h3>When In Doubt, Leave It Blank</h3>
+<p>If a field is nullable in your schema or has a good default value, encourage users to just leave the field blank when they are manually building or converting the data. It's better for them to not type anything at all in such cases, especially when they might get the value wrong (ex. typing <code>NA</code> instead of <code>N/A</code> when <code>N/A</code> is the required value for that situation).</p>
+<p>The ultimate goal is to encourage them to give you a data set that can be easily converted into a CSV file, which can in turn be used by the Record API.</p>
+<p>Excel, done right, can be a great format for receiving data from less technically-skilled teams and organizations. It's really not that difficult to educate such users on how to build a simple data set that lets them just fire an email and walk away. Often it's just copying and pasting data in a tool they already know. It can even be an effective way for organizations to bypass uncooperative IT departments that might scoff at NiFi reaching into departmental databases, setting up message queues, etc. </p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+    </p>
+  </div>
+
+
+
+
+
+</article>
+
+    <footer>
+<p>&copy;  </p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Mike Thomsen's Blog ",
+  "url" : "",
+  "image": "",
+  "description": ""
+}
+</script>
+
+
+</body>
+</html>

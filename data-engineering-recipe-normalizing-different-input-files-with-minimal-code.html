@@ -1,0 +1,236 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="/theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="/theme/pygments/github.min.css">
+
+
+  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/solid.css">
+
+
+
+
+
+
+
+<meta name="author" content="Mike Thomsen" />
+<meta name="description" content="Scenario: you get CSV files that relate to the same problem domain, but they have different headers. One of the problems that we&#39;ve faced in the past where I work is that our clients can get data that falls in the same problem domain from different sources, but they need …" />
+<meta name="keywords" content="">
+
+
+<meta property="og:site_name" content="Mike Thomsen's Blog"/>
+<meta property="og:title" content="&#34;Data Engineering Recipe: Normalizing different input files with minimal code&#34;"/>
+<meta property="og:description" content="Scenario: you get CSV files that relate to the same problem domain, but they have different headers. One of the problems that we&#39;ve faced in the past where I work is that our clients can get data that falls in the same problem domain from different sources, but they need …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="/data-engineering-recipe-normalizing-different-input-files-with-minimal-code.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2019-09-13 08:50:00-04:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="/author/mike-thomsen.html">
+<meta property="article:section" content="misc"/>
+<meta property="og:image" content="">
+
+  <title>Mike Thomsen's Blog &ndash; &#34;Data Engineering Recipe: Normalizing different input files with minimal code&#34;</title>
+
+</head>
+<body class="light-theme">
+  <aside>
+    <div>
+      <a href="">
+        <img src="/theme/img/profile.png" alt="" title="">
+      </a>
+
+      <h1>
+        <a href=""></a>
+      </h1>
+
+
+
+      <nav>
+        <ul class="list">
+
+
+
+            <li>
+              <a target="_self" href="https://getpelican.com/" >Pelican</a>
+            </li>
+            <li>
+              <a target="_self" href="https://www.python.org/" >Python.org</a>
+            </li>
+            <li>
+              <a target="_self" href="https://palletsprojects.com/p/jinja/" >Jinja2</a>
+            </li>
+            <li>
+              <a target="_self" href="#" >You can modify those links in your config file</a>
+            </li>
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-You can add links in your config file" href="#" target="_blank">
+              <i class="fab fa-You can add links in your config file"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-Another social link" href="#" target="_blank">
+              <i class="fab fa-Another social link"></i>
+            </a>
+          </li>
+      </ul>
+    </div>
+
+  </aside>
+  <main>
+
+
+<article class="single">
+  <header>
+      
+    <h1 id="data-engineering-recipe-normalizing-different-input-files-with-minimal-code">"Data Engineering Recipe: Normalizing different input files with minimal code"</h1>
+    <p>
+      Posted on Fri 13 September 2019 in <a href="/category/misc.html">misc</a>
+
+    </p>
+  </header>
+
+
+  <div>
+    <blockquote>
+<p>Scenario: you get CSV files that relate to the same problem domain, but they have different headers.</p>
+</blockquote>
+<p>One of the problems that we've faced in the past where I work is that our clients can get data that falls in the same problem domain from different sources, but they need to normalize it into a common format. It's fairly common problem, so the purpose of this post is to explain some easy strategies that will keep you from slinging too much Groovy or Python in favor of leveraging the features that NiFi has (partly due to the awesome capabilities of Apache Avro) to do a lot of the work for you.</p>
+<p>The NiFi Record API, fundamentally, is built on Apache Avro. The structure and capabilities it has are built on and extensions to what Apache Avro gives you out of the box. One of those features is the ability to define one or more aliases for a field name. Now, aliases are one-way, which is really helpful when you're using NiFi to do ETL tasks like normalizing data. Wrong header comes in, the right field name/header goes out. It also doesn't care if you give one field one alias or several hundred. The only real restriction is that you cannot have aliases and field names colliding. That means that field names must be unique amongst each other and there cannot be any overlap between aliases that one have one alias resolving to two or more fields.</p>
+<p>Consider these CSV files:</p>
+<div class="highlight"><pre><span></span><code><span class="err">fname,lname,failed_logins</span>
+<span class="err">John,Smith,2</span>
+<span class="err">Jane,Doe,1</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="err">first_name,last_name,failed_login_attempts</span>
+<span class="err">John,Brown,3</span>
+<span class="err">Jane,Smith,2</span>
+</code></pre></div>
+
+<p>This is the only Avro needed to resolve that into a single input:</p>
+<div class="highlight"><pre><span></span><code><span class="err">{</span>
+<span class="err">    &quot;name&quot;: &quot;UserRecord&quot;,</span>
+<span class="err">    &quot;type&quot;: &quot;record&quot;,</span>
+<span class="err">    &quot;fields&quot;: [</span>
+<span class="err">        {</span>
+<span class="err">            &quot;name&quot;: &quot;firstName&quot;, &quot;type&quot;: &quot;string&quot;, &quot;aliases&quot;: [ &quot;fname&quot;, &quot;first_name&quot; ]</span>
+<span class="err">        },</span>
+<span class="err">        {</span>
+<span class="err">            &quot;name&quot;: &quot;lastName&quot;, &quot;type&quot;: &quot;string&quot;, &quot;aliases&quot;: [ &quot;lname&quot;, &quot;last_name&quot; ]</span>
+<span class="err">        },</span>
+<span class="err">        {</span>
+<span class="err">            &quot;name&quot;: &quot;failedLoginCount&quot;, &quot;type&quot;: &quot;int&quot;, &quot;aliases&quot;: [ &quot;failed_logins&quot;, &quot;failed_login_attempts&quot; ]</span>
+<span class="err">        }</span>
+<span class="err">    ]</span>
+<span class="err">}</span>
+</code></pre></div>
+
+<p>If your data sources are following good practices like not putting multi-line headers (ex. top row is meant to categorize the real headers below it) and not repeating header names, you can almost always stop at that point. If not, you might have to write some Groovy code for <code>ExecuteScript</code> to peek at the CSV file and inspect the top few lines with a Java <code>Scanner</code> object to see what you're getting. Event that is not that difficult. For example, this is one way to handle repeated headers if they're repeated consistently (never underestimate the ability of people to get things like this amazingly inconsistent).</p>
+<div class="highlight"><pre><span></span><code><span class="n">def</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">session</span><span class="p">.</span><span class="k">read</span><span class="p">(</span><span class="n">flowFile</span><span class="p">)</span><span class="w"></span>
+<span class="n">def</span><span class="w"> </span><span class="n">scanner</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Scanner</span><span class="p">(</span><span class="k">is</span><span class="p">)</span><span class="w"></span>
+<span class="n">def</span><span class="w"> </span><span class="n">topThree</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="n"></span>
+<span class="n">    scanner.nextLine(),</span>
+<span class="n">    scanner.nextLine(),</span>
+<span class="n">    scanner.nextLine()</span>
+<span class="o">]</span><span class="w"></span>
+<span class="n">def</span><span class="w"> </span><span class="n">correctHeader</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">null</span><span class="w"></span>
+<span class="n">def</span><span class="w"> </span><span class="n">savedLines</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">[]</span><span class="w"></span>
+<span class="n">topThree</span><span class="p">.</span><span class="k">each</span><span class="w"> </span><span class="err">{</span><span class="w"> </span><span class="n">line</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">correctHeader</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">savedLines</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">line</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"></span>
+<span class="w">    </span><span class="err">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">line</span><span class="vm">?</span><span class="p">.</span><span class="k">with</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">def</span><span class="w"> </span><span class="n">parts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">it</span><span class="p">.</span><span class="n">split</span><span class="p">(</span><span class="ss">&quot;,&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">parts</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="ss">&quot;SOME_HEADER_FIELD&quot;</span><span class="p">))</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">            </span><span class="o">//</span><span class="k">Found</span><span class="w"> </span><span class="n">likely</span><span class="w"> </span><span class="n">header</span><span class="w"> </span><span class="n">line</span><span class="w"></span>
+<span class="w">            </span><span class="n">def</span><span class="w"> </span><span class="n">duplicates</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">[]</span><span class="w"></span>
+<span class="w">            </span><span class="n">def</span><span class="w"> </span><span class="n">headerLine</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">it</span><span class="w"></span>
+<span class="w">            </span><span class="n">parts</span><span class="p">.</span><span class="k">each</span><span class="w"> </span><span class="err">{</span><span class="w"> </span><span class="n">part</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"></span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">parts</span><span class="p">.</span><span class="n">findAll</span><span class="w"> </span><span class="err">{</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">part</span><span class="w"> </span><span class="err">}</span><span class="p">.</span><span class="k">size</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">                    </span><span class="n">duplicates</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">part</span><span class="w"></span>
+<span class="w">                </span><span class="err">}</span><span class="w"></span>
+<span class="w">            </span><span class="err">}</span><span class="w"></span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">duplicates</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">                </span><span class="n">def</span><span class="w"> </span><span class="n">handledDuplicates</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="n">:</span><span class="o">]</span><span class="w"></span>
+<span class="w">                </span><span class="n">def</span><span class="w"> </span><span class="n">newHeaderTokens</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">[]</span><span class="w"></span>
+<span class="w">                </span><span class="n">parts</span><span class="p">.</span><span class="k">each</span><span class="w"> </span><span class="err">{</span><span class="w"> </span><span class="n">part</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"></span>
+<span class="w">                    </span><span class="n">def</span><span class="w"> </span><span class="n">newToken</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">part</span><span class="w"></span>
+<span class="w">                    </span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="n">part</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">duplicates</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="err">!</span><span class="p">(</span><span class="n">part</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">handledDuplicates</span><span class="p">.</span><span class="n">keySet</span><span class="p">()))</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">                        </span><span class="n">handledDuplicates</span><span class="o">[</span><span class="n">part</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"></span>
+<span class="w">                    </span><span class="err">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="n">part</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">duplicates</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">part</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">handledDuplicates</span><span class="p">.</span><span class="n">keySet</span><span class="p">()))</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">                        </span><span class="n">newToken</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">&quot;${part}_${handledDuplicates[part]}&quot;</span><span class="w"></span>
+<span class="w">                        </span><span class="n">handledDuplicates</span><span class="o">[</span><span class="n">part</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">handledDuplicates</span><span class="o">[</span><span class="n">part</span><span class="o">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="w">                    </span><span class="err">}</span><span class="w"></span>
+
+<span class="w">                    </span><span class="n">newHeaderTokens</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">newToken</span><span class="w"></span>
+<span class="w">                </span><span class="err">}</span><span class="w"></span>
+<span class="w">                </span><span class="n">headerLine</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">newHeaderTokens</span><span class="p">.</span><span class="k">join</span><span class="p">(</span><span class="ss">&quot;,&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="err">}</span><span class="w"></span>
+
+<span class="w">            </span><span class="n">correctHeader</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">headerLine</span><span class="w"></span>
+<span class="w">        </span><span class="err">}</span><span class="w"></span>
+<span class="w">    </span><span class="err">}</span><span class="w"></span>
+<span class="err">}</span><span class="w"></span>
+
+<span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">scanner</span><span class="p">.</span><span class="n">hasNextLine</span><span class="p">())</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">savedLines</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">scanner</span><span class="p">.</span><span class="n">nextLine</span><span class="p">()</span><span class="w"></span>
+<span class="err">}</span><span class="w"></span>
+<span class="o">//</span><span class="n">Finish</span><span class="w"> </span><span class="n">processing</span><span class="w"></span>
+</code></pre></div>
+  </div>
+  <div class="tag-cloud">
+    <p>
+    </p>
+  </div>
+
+
+
+
+
+</article>
+
+    <footer>
+<p>&copy;  </p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Mike Thomsen's Blog ",
+  "url" : "",
+  "image": "",
+  "description": ""
+}
+</script>
+
+
+</body>
+</html>
