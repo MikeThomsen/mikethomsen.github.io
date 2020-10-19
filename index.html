@@ -12,9 +12,11 @@
 
     <link rel="stylesheet" type="text/css" href="/theme/stylesheet/style.min.css">
 
+    <link id="dark-theme-style" rel="stylesheet" type="text/css"
+    href="/theme/stylesheet/dark-theme.min.css">
 
-    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
-          href="/theme/pygments/github.min.css">
+    <link id="pygments-dark-theme" rel="stylesheet" type="text/css"
+          href="/theme/pygments/monokai.min.css">
 
 
   <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/fontawesome.css">
@@ -22,7 +24,9 @@
   <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/solid.css">
 
 
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Mike Thomsen's Blog Atom">
 
+    <link href="/index.xml" type="application/rss+xml" rel="alternate" title="Mike Thomsen's Blog RSS">
 
 
 
@@ -39,11 +43,11 @@
   <title>Mike Thomsen's Blog</title>
 
 </head>
-<body class="light-theme">
+<body class="dark-theme">
   <aside>
     <div>
       <a href="">
-        <img src="/theme/img/profile.png" alt="" title="">
+        <img src="/img/profile.png" alt="" title="">
       </a>
 
       <h1>
@@ -56,31 +60,30 @@
         <ul class="list">
 
 
+              <li>
+                <a target="_self"
+                   href="/pages/about-me/#about-me">
+                  About Me
+                </a>
+              </li>
 
-            <li>
-              <a target="_self" href="https://getpelican.com/" >Pelican</a>
-            </li>
-            <li>
-              <a target="_self" href="https://www.python.org/" >Python.org</a>
-            </li>
-            <li>
-              <a target="_self" href="https://palletsprojects.com/p/jinja/" >Jinja2</a>
-            </li>
-            <li>
-              <a target="_self" href="#" >You can modify those links in your config file</a>
-            </li>
         </ul>
       </nav>
 
       <ul class="social">
           <li>
-            <a  class="sc-You can add links in your config file" href="#" target="_blank">
-              <i class="fab fa-You can add links in your config file"></i>
+            <a  class="sc-github" href="https://github.com/MikeThomsen" target="_blank">
+              <i class="fab fa-github"></i>
             </a>
           </li>
           <li>
-            <a  class="sc-Another social link" href="#" target="_blank">
-              <i class="fab fa-Another social link"></i>
+            <a  class="sc-linkedin" href="https://www.linkedin.com/in/mike-thomsen-780341191" target="_blank">
+              <i class="fab fa-linkedin"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-stack-overflow" href="https://stackoverflow.com/users/284538/mike-thomsen" target="_blank">
+              <i class="fab fa-stack-overflow"></i>
             </a>
           </li>
       </ul>
@@ -89,32 +92,20 @@
   </aside>
   <main>
 
+    <nav>
+      <a href="">Home</a>
+
+
+      <a href="/atom.xml">Atom</a>
+
+      <a href="/index.xml">RSS</a>
+    </nav>
 
 
 
 <article>
   <header>
-    <h2><a href="/no-one.html#no-one">No one...</a></h2>
-    <p>
-      Posted on Sun 20 October 2019 in <a href="/category/misc.html">misc</a>
-
-
-    </p>
-  </header>
-  <div>
-      <p>No one cares if you are running the latest and greatest tech stack if your work isn't solving real needs and fixing real problems.</p>
-<p>No one cares if you are a 100x software engineer if you don't bring value to your employer or client and act as a force multiplier …</p>
-        <br>
-        <a class="btn"
-           href="/no-one.html#no-one">
-          Continue reading
-        </a>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="/data-engineering-recipe-normalizing-different-input-files-with-minimal-code.html#data-engineering-recipe-normalizing-different-input-files-with-minimal-code">"Data Engineering Recipe: Normalizing different input files with minimal code"</a></h2>
+    <h2><a href="/posts/2019/09/13/data-engineering-recipe-normalizing-different-input-files-with-minimal-code/#data-engineering-recipe-normalizing-different-input-files-with-minimal-code">"Data Engineering Recipe: Normalizing different input files with minimal code"</a></h2>
     <p>
       Posted on Fri 13 September 2019 in <a href="/category/misc.html">misc</a>
 
@@ -128,7 +119,7 @@
 <p>One of the problems that we've faced in the past where I work is that our clients can get data that falls in the same problem domain from different sources, but they need …</p>
         <br>
         <a class="btn"
-           href="/data-engineering-recipe-normalizing-different-input-files-with-minimal-code.html#data-engineering-recipe-normalizing-different-input-files-with-minimal-code">
+           href="/posts/2019/09/13/data-engineering-recipe-normalizing-different-input-files-with-minimal-code/#data-engineering-recipe-normalizing-different-input-files-with-minimal-code">
           Continue reading
         </a>
   </div>
@@ -136,7 +127,7 @@
 </article>
 <article>
   <header>
-    <h2><a href="/containerizing-nifi-etl-processes.html#containerizing-nifi-etl-processes">Containerizing NiFi ETL processes</a></h2>
+    <h2><a href="/posts/2019/08/16/containerizing-nifi-etl-processes/#containerizing-nifi-etl-processes">Containerizing NiFi ETL processes</a></h2>
     <p>
       Posted on Fri 16 August 2019 in <a href="/category/misc.html">misc</a>
 
@@ -148,7 +139,7 @@
 <p>The preferred approach to managing NiFi in most cases is through the <a href="https://nifi.apache.org/registry.html">NiFi Registry</a>. It's an awesome tool that puts a lot of really powerful change management tools into your hands for developing, snapshotting and promoting flows between environments. The purpose of this blog post isn't to recommend an …</p>
         <br>
         <a class="btn"
-           href="/containerizing-nifi-etl-processes.html#containerizing-nifi-etl-processes">
+           href="/posts/2019/08/16/containerizing-nifi-etl-processes/#containerizing-nifi-etl-processes">
           Continue reading
         </a>
   </div>
@@ -156,7 +147,7 @@
 </article>
 <article>
   <header>
-    <h2><a href="/making-nifi-components-searchable.html#making-nifi-components-searchable">Making NiFi components searchable</a></h2>
+    <h2><a href="/posts/2019/06/27/making-nifi-components-searchable/#making-nifi-components-searchable">Making NiFi components searchable</a></h2>
     <p>
       Posted on Thu 27 June 2019 in <a href="/category/misc.html">misc</a>
 
@@ -167,7 +158,7 @@
       <p>If you have a NiFi component that you work on for your business/team, you can make it searchable using the <code>Searchable</code> interface. The following code sample is taken from <a href="https://issues.apache.org/jira/browse/NIFI-4406">NIFI-4406</a>, which makes <code>ExecuteScript</code> searchable so that you can search for words inside of either the script body property or …</p>
         <br>
         <a class="btn"
-           href="/making-nifi-components-searchable.html#making-nifi-components-searchable">
+           href="/posts/2019/06/27/making-nifi-components-searchable/#making-nifi-components-searchable">
           Continue reading
         </a>
   </div>
@@ -175,7 +166,7 @@
 </article>
 <article>
   <header>
-    <h2><a href="/announcing-the-apache-nifi-test-harness.html#announcing-the-apache-nifi-test-harness">Announcing the Apache NiFi Test Harness</a></h2>
+    <h2><a href="/posts/2019/03/20/announcing-the-apache-nifi-test-harness/#announcing-the-apache-nifi-test-harness">Announcing the Apache NiFi Test Harness</a></h2>
     <p>
       Posted on Wed 20 March 2019 in <a href="/category/misc.html">misc</a>
 
@@ -186,7 +177,7 @@
       <p><a href="https://github.com/peter-gergely-horvath/">Peter Horvath</a> provided us with a great new feature pull request that adds a test harness for running a live NiFi instance within a JUnit integration test. For now, the feature is only officially included in the unreleased 1.10.0-SNAPSHOT code on GitHub, but I put out a stable …</p>
         <br>
         <a class="btn"
-           href="/announcing-the-apache-nifi-test-harness.html#announcing-the-apache-nifi-test-harness">
+           href="/posts/2019/03/20/announcing-the-apache-nifi-test-harness/#announcing-the-apache-nifi-test-harness">
           Continue reading
         </a>
   </div>
@@ -194,7 +185,7 @@
 </article>
 <article>
   <header>
-    <h2><a href="/a-data-engineering-perspective-on-mongodb.html#a-data-engineering-perspective-on-mongodb">A data engineering perspective on MongoDB</a></h2>
+    <h2><a href="/posts/2019/02/24/a-data-engineering-perspective-on-mongodb/#a-data-engineering-perspective-on-mongodb">A data engineering perspective on MongoDB</a></h2>
     <p>
       Posted on Sun 24 February 2019 in <a href="/category/misc.html">misc</a>
 
@@ -205,7 +196,7 @@
       <p>I came late to the game with MongoDB, having my first real professional experience with it in 2017 and doing a lot of work with refactoring the Apache NiFi support for it in 2017 through 2018. Over the years, I had seen lots of people attacking it and telling me …</p>
         <br>
         <a class="btn"
-           href="/a-data-engineering-perspective-on-mongodb.html#a-data-engineering-perspective-on-mongodb">
+           href="/posts/2019/02/24/a-data-engineering-perspective-on-mongodb/#a-data-engineering-perspective-on-mongodb">
           Continue reading
         </a>
   </div>
@@ -213,7 +204,7 @@
 </article>
 <article>
   <header>
-    <h2><a href="/using-the-s3-processors-with-minio.html#using-the-s3-processors-with-minio">Using the S3 Processors with Minio</a></h2>
+    <h2><a href="/posts/2019/02/18/using-the-s3-processors-with-minio/#using-the-s3-processors-with-minio">Using the S3 Processors with Minio</a></h2>
     <p>
       Posted on Mon 18 February 2019 in <a href="/category/misc.html">misc</a>
 
@@ -229,7 +220,7 @@
 <div class="highlight"><pre><span></span><code><span class="n">Endpoint</span><span class="o">:</span>  <span class="n">http</span><span class="o">://</span><span class="mf">192.168</span><span class="o">.</span><span class="mf">1.151</span><span class="o">:</span><span class="mi">9000</span>  <span class="n">http …</span></code></pre></div>
         <br>
         <a class="btn"
-           href="/using-the-s3-processors-with-minio.html#using-the-s3-processors-with-minio">
+           href="/posts/2019/02/18/using-the-s3-processors-with-minio/#using-the-s3-processors-with-minio">
           Continue reading
         </a>
   </div>
@@ -237,7 +228,7 @@
 </article>
 <article>
   <header>
-    <h2><a href="/configuring-opencypher-and-ssl-on-janusgraph.html#configuring-opencypher-and-ssl-on-janusgraph">Configuring OpenCypher and SSL on JanusGraph</a></h2>
+    <h2><a href="/posts/2019/02/17/configuring-opencypher-and-ssl-on-janusgraph/#configuring-opencypher-and-ssl-on-janusgraph">Configuring OpenCypher and SSL on JanusGraph</a></h2>
     <p>
       Posted on Sun 17 February 2019 in <a href="/category/misc.html">misc</a>
 
@@ -248,7 +239,7 @@
       <p>OpenCypher is an implementation of the <a href="https://en.wikipedia.org/wiki/Cypher_Query_Language">Cypher Query Language</a> for graph databases other than Neo4J. This tutorial explains how to set up OpenCypher and SSL support in <a href="https://github.com/JanusGraph/janusgraph/releases/tag/v0.3.1">JanusGraph 0.3.1</a>. Newer versions of JanusGraph will hopefully use the newer TinkerPop 3.3.5+ configuration options to allow you to …</p>
         <br>
         <a class="btn"
-           href="/configuring-opencypher-and-ssl-on-janusgraph.html#configuring-opencypher-and-ssl-on-janusgraph">
+           href="/posts/2019/02/17/configuring-opencypher-and-ssl-on-janusgraph/#configuring-opencypher-and-ssl-on-janusgraph">
           Continue reading
         </a>
   </div>
@@ -256,7 +247,7 @@
 </article>
 <article>
   <header>
-    <h2><a href="/using-python-to-process-data-from-apache-nifi.html#using-python-to-process-data-from-apache-nifi">Using Python to process data from Apache NiFi</a></h2>
+    <h2><a href="/posts/2019/02/09/using-python-to-process-data-from-apache-nifi/#using-python-to-process-data-from-apache-nifi">Using Python to process data from Apache NiFi</a></h2>
     <p>
       Posted on Sat 09 February 2019 in <a href="/category/misc.html">misc</a>
 
@@ -267,7 +258,7 @@
       <p>The scripting bundle that ships with the standard distribution of Apache NiFi is great for developers comfortable with the Java Virtual Machine, but doesn't provide much for people that want to use something like Python 3.X to process data in their flows. While you could write a REST service …</p>
         <br>
         <a class="btn"
-           href="/using-python-to-process-data-from-apache-nifi.html#using-python-to-process-data-from-apache-nifi">
+           href="/posts/2019/02/09/using-python-to-process-data-from-apache-nifi/#using-python-to-process-data-from-apache-nifi">
           Continue reading
         </a>
   </div>
@@ -275,7 +266,7 @@
 </article>
 <article>
   <header>
-    <h2><a href="/using-excel-with-apache-nifi-to-make-user-data-exchanges-easier.html#using-excel-with-apache-nifi-to-make-user-data-exchanges-easier">Using Excel with Apache NiFi to make user data exchanges easier</a></h2>
+    <h2><a href="/posts/2018/12/08/using-excel-with-apache-nifi-to-make-user-data-exchanges-easier/#using-excel-with-apache-nifi-to-make-user-data-exchanges-easier">Using Excel with Apache NiFi to make user data exchanges easier</a></h2>
     <p>
       Posted on Sat 08 December 2018 in <a href="/category/misc.html">misc</a>
 
@@ -286,7 +277,27 @@
       <p>It's very common in many situations for data engineers and others working with an organization's data to run into one or more situations where the data is delivered by people who just load it up in a spreadsheet and send it over. In most cases, they don't know better and …</p>
         <br>
         <a class="btn"
-           href="/using-excel-with-apache-nifi-to-make-user-data-exchanges-easier.html#using-excel-with-apache-nifi-to-make-user-data-exchanges-easier">
+           href="/posts/2018/12/08/using-excel-with-apache-nifi-to-make-user-data-exchanges-easier/#using-excel-with-apache-nifi-to-make-user-data-exchanges-easier">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="/posts/2018/12/07/how-to-script-a-nifi-lookupservice/#how-to-script-a-nifi-lookupservice">How to script a NiFi LookupService</a></h2>
+    <p>
+      Posted on Fri 07 December 2018 in <a href="/category/misc.html">misc</a>
+
+
+    </p>
+  </header>
+  <div>
+      <h2>Overview</h2>
+<p>A while back, the concept of "lookup Services" was added to the Record API in Apache NiFi. The Record API was great, but it needed a clean way to enrich a record set that didn't involve parsing the entire record set and feeding it record-by-record to a script or …</p>
+        <br>
+        <a class="btn"
+           href="/posts/2018/12/07/how-to-script-a-nifi-lookupservice/#how-to-script-a-nifi-lookupservice">
           Continue reading
         </a>
   </div>
@@ -301,9 +312,22 @@
 
 
     <footer>
-<p>&copy;  </p>
+<p>
+  &copy; 2020  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+</p>
 <p>
 Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p><p>
+  <a rel="license"
+     href="http://creativecommons.org/licenses/by-sa/4.0/"
+     target="_blank">
+    <img alt="Creative Commons License"
+         title="Creative Commons License"
+         style="border-width:0"
+           src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png"
+         width="80"
+         height="15"/>
+  </a>
 </p>    </footer>
   </main>
 

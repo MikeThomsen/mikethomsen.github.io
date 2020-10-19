@@ -12,9 +12,11 @@
 
     <link rel="stylesheet" type="text/css" href="/theme/stylesheet/style.min.css">
 
+    <link id="dark-theme-style" rel="stylesheet" type="text/css"
+    href="/theme/stylesheet/dark-theme.min.css">
 
-    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
-          href="/theme/pygments/github.min.css">
+    <link id="pygments-dark-theme" rel="stylesheet" type="text/css"
+          href="/theme/pygments/monokai.min.css">
 
 
   <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/fontawesome.css">
@@ -22,7 +24,9 @@
   <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/solid.css">
 
 
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Mike Thomsen's Blog Atom">
 
+    <link href="/index.xml" type="application/rss+xml" rel="alternate" title="Mike Thomsen's Blog RSS">
 
 
 
@@ -39,11 +43,11 @@
   <title>Mike Thomsen's Blog &ndash; Tags</title>
 
 </head>
-<body class="light-theme">
+<body class="dark-theme">
   <aside>
     <div>
       <a href="">
-        <img src="/theme/img/profile.png" alt="" title="">
+        <img src="/img/profile.png" alt="" title="">
       </a>
 
       <h1>
@@ -56,31 +60,30 @@
         <ul class="list">
 
 
+              <li>
+                <a target="_self"
+                   href="/pages/about-me/#about-me">
+                  About Me
+                </a>
+              </li>
 
-            <li>
-              <a target="_self" href="https://getpelican.com/" >Pelican</a>
-            </li>
-            <li>
-              <a target="_self" href="https://www.python.org/" >Python.org</a>
-            </li>
-            <li>
-              <a target="_self" href="https://palletsprojects.com/p/jinja/" >Jinja2</a>
-            </li>
-            <li>
-              <a target="_self" href="#" >You can modify those links in your config file</a>
-            </li>
         </ul>
       </nav>
 
       <ul class="social">
           <li>
-            <a  class="sc-You can add links in your config file" href="#" target="_blank">
-              <i class="fab fa-You can add links in your config file"></i>
+            <a  class="sc-github" href="https://github.com/MikeThomsen" target="_blank">
+              <i class="fab fa-github"></i>
             </a>
           </li>
           <li>
-            <a  class="sc-Another social link" href="#" target="_blank">
-              <i class="fab fa-Another social link"></i>
+            <a  class="sc-linkedin" href="https://www.linkedin.com/in/mike-thomsen-780341191" target="_blank">
+              <i class="fab fa-linkedin"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-stack-overflow" href="https://stackoverflow.com/users/284538/mike-thomsen" target="_blank">
+              <i class="fab fa-stack-overflow"></i>
             </a>
           </li>
       </ul>
@@ -89,20 +92,44 @@
   </aside>
   <main>
 
+    <nav>
+      <a href="">Home</a>
+
+
+      <a href="/atom.xml">Atom</a>
+
+      <a href="/index.xml">RSS</a>
+    </nav>
 
 <article class="single">
   <header>
     <h1 id="tags">Tags</h1>
   </header>
   <div>
-    <ul class="list">    </ul>
+    <ul class="list">          <li><a href="/tag/elastic.html">elastic</a> (1)</li>
+          <li><a href="/tag/nifi.html">nifi</a> (4)</li>
+          <li><a href="/tag/security.html">security</a> (1)</li>
+    </ul>
   </div>
 </article>
 
     <footer>
-<p>&copy;  </p>
+<p>
+  &copy; 2020  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+</p>
 <p>
 Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p><p>
+  <a rel="license"
+     href="http://creativecommons.org/licenses/by-sa/4.0/"
+     target="_blank">
+    <img alt="Creative Commons License"
+         title="Creative Commons License"
+         style="border-width:0"
+           src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png"
+         width="80"
+         height="15"/>
+  </a>
 </p>    </footer>
   </main>
 

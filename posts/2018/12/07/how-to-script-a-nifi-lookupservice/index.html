@@ -1,0 +1,242 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="/theme/stylesheet/style.min.css">
+
+    <link id="dark-theme-style" rel="stylesheet" type="text/css"
+    href="/theme/stylesheet/dark-theme.min.css">
+
+    <link id="pygments-dark-theme" rel="stylesheet" type="text/css"
+          href="/theme/pygments/monokai.min.css">
+
+
+  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/solid.css">
+
+
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Mike Thomsen's Blog Atom">
+
+    <link href="/index.xml" type="application/rss+xml" rel="alternate" title="Mike Thomsen's Blog RSS">
+
+
+
+
+<meta name="author" content="Mike Thomsen" />
+<meta name="description" content="Overview A while back, the concept of &#34;lookup Services&#34; was added to the Record API in Apache NiFi. The Record API was great, but it needed a clean way to enrich a record set that didn&#39;t involve parsing the entire record set and feeding it record-by-record to a script or …" />
+<meta name="keywords" content="">
+
+
+<meta property="og:site_name" content="Mike Thomsen's Blog"/>
+<meta property="og:title" content="How to script a NiFi LookupService"/>
+<meta property="og:description" content="Overview A while back, the concept of &#34;lookup Services&#34; was added to the Record API in Apache NiFi. The Record API was great, but it needed a clean way to enrich a record set that didn&#39;t involve parsing the entire record set and feeding it record-by-record to a script or …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="/posts/2018/12/07/how-to-script-a-nifi-lookupservice/"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2018-12-07 00:00:00-05:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="/author/mike-thomsen.html">
+<meta property="article:section" content="misc"/>
+<meta property="og:image" content="">
+
+  <title>Mike Thomsen's Blog &ndash; How to script a NiFi LookupService</title>
+
+</head>
+<body class="dark-theme">
+  <aside>
+    <div>
+      <a href="">
+        <img src="/img/profile.png" alt="" title="">
+      </a>
+
+      <h1>
+        <a href=""></a>
+      </h1>
+
+
+
+      <nav>
+        <ul class="list">
+
+
+              <li>
+                <a target="_self"
+                   href="/pages/about-me/#about-me">
+                  About Me
+                </a>
+              </li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-github" href="https://github.com/MikeThomsen" target="_blank">
+              <i class="fab fa-github"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-linkedin" href="https://www.linkedin.com/in/mike-thomsen-780341191" target="_blank">
+              <i class="fab fa-linkedin"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-stack-overflow" href="https://stackoverflow.com/users/284538/mike-thomsen" target="_blank">
+              <i class="fab fa-stack-overflow"></i>
+            </a>
+          </li>
+      </ul>
+    </div>
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="">Home</a>
+
+
+      <a href="/atom.xml">Atom</a>
+
+      <a href="/index.xml">RSS</a>
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="how-to-script-a-nifi-lookupservice">How to script a NiFi LookupService</h1>
+    <p>
+      Posted on Fri 07 December 2018 in <a href="/category/misc.html">misc</a>
+
+    </p>
+  </header>
+
+
+  <div>
+    <h2>Overview</h2>
+<p>A while back, the concept of "lookup Services" was added to the Record API in Apache NiFi. The Record API was great, but it needed a clean way to enrich a record set that didn't involve parsing the entire record set and feeding it record-by-record to a script or custom processor. That's where the <code>LookupRecord</code> processor and lookup services come in. </p>
+<p>NiFi comes with a lot of built-in lookup services that can do things ranging from a simple lookup on a CSV file, to enriching from a REST call, to enriching from a database entry. However, there are a lot of cases where enrichment needs to be done based on custom business logic. That's where the <code>ScriptedLookupService</code> fits into the picture. It similar to <code>ExecuteScript</code> or <code>InvokeScriptedProcessor</code> in that it exposes a simple, programmable interface for writing scripts that implement your business logic.</p>
+<p>The example below can be tested using <code>LookupRecord</code> with a configured <code>ScriptedLookupService</code>. It has a single mandatory key, <code>message</code>. To configure it, do the following:</p>
+<ol>
+<li>Add a dynamic property to the <code>LookupRecord</code> processor named <code>message</code> and set it to a record path in your schema that points to a string field.</li>
+<li>Configure the processor property for output path to point a string field's record path in your schema so that the result can be set.</li>
+<li>Send a record set through the processor.</li>
+</ol>
+<h2>Example Code</h2>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">org.apache.nifi.controller.ControllerServiceInitializationContext</span>
+<span class="kn">import</span> <span class="nn">org.apache.nifi.reporting.InitializationException</span>
+
+<span class="k">class</span> <span class="nc">SampleScriptedService</span> <span class="n">implements</span> <span class="n">LookupService</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="p">{</span>
+   <span class="nd">@Override</span>
+    <span class="n">Optional</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">lookup</span><span class="p">(</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">coords</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">Optional</span><span class="o">.</span><span class="n">ofNullable</span><span class="p">(</span><span class="s2">&quot;String received a message: </span><span class="se">\&quot;</span><span class="s2"> + coords[&#39;message&#39;] + &quot;</span>\<span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="n">Class</span><span class="o">&lt;</span><span class="err">?</span><span class="o">&gt;</span> <span class="n">getValueType</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">String</span>
+    <span class="p">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="n">Set</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">getRequiredKeys</span><span class="p">()</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span> <span class="k">as</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span>
+    <span class="p">}</span>
+
+    <span class="n">void</span> <span class="n">setLogger</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">log</span> <span class="o">=</span> <span class="n">logger</span>
+    <span class="p">}</span>
+
+    <span class="n">void</span> <span class="n">onEnabled</span><span class="p">(</span><span class="n">context</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="p">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="n">void</span> <span class="n">initialize</span><span class="p">(</span><span class="n">ControllerServiceInitializationContext</span> <span class="n">context</span><span class="p">)</span> <span class="n">throws</span> <span class="n">InitializationException</span> <span class="p">{</span>
+
+    <span class="p">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="n">Collection</span><span class="o">&lt;</span><span class="n">ValidationResult</span><span class="o">&gt;</span> <span class="n">validate</span><span class="p">(</span><span class="n">ValidationContext</span> <span class="n">context</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">null</span>
+    <span class="p">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="n">PropertyDescriptor</span> <span class="n">getPropertyDescriptor</span><span class="p">(</span><span class="n">String</span> <span class="n">name</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">null</span>
+    <span class="p">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="n">void</span> <span class="n">onPropertyModified</span><span class="p">(</span><span class="n">PropertyDescriptor</span> <span class="n">descriptor</span><span class="p">,</span> <span class="n">String</span> <span class="n">oldValue</span><span class="p">,</span> <span class="n">String</span> <span class="n">newValue</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="p">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="n">List</span><span class="o">&lt;</span><span class="n">PropertyDescriptor</span><span class="o">&gt;</span> <span class="n">getPropertyDescriptors</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">null</span>
+    <span class="p">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="n">String</span> <span class="n">getIdentifier</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">null</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">lookupService</span> <span class="o">=</span> <span class="n">new</span> <span class="n">SampleScriptedService</span><span class="p">()</span>
+</code></pre></div>
+  </div>
+  <div class="tag-cloud">
+    <p>
+    </p>
+  </div>
+
+
+
+
+
+</article>
+
+    <footer>
+<p>
+  &copy; 2020  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p><p>
+  <a rel="license"
+     href="http://creativecommons.org/licenses/by-sa/4.0/"
+     target="_blank">
+    <img alt="Creative Commons License"
+         title="Creative Commons License"
+         style="border-width:0"
+           src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png"
+         width="80"
+         height="15"/>
+  </a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Mike Thomsen's Blog ",
+  "url" : "",
+  "image": "",
+  "description": ""
+}
+</script>
+
+
+</body>
+</html>

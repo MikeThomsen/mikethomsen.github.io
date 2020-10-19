@@ -1,0 +1,215 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="/theme/stylesheet/style.min.css">
+
+    <link id="dark-theme-style" rel="stylesheet" type="text/css"
+    href="/theme/stylesheet/dark-theme.min.css">
+
+    <link id="pygments-dark-theme" rel="stylesheet" type="text/css"
+          href="/theme/pygments/monokai.min.css">
+
+
+  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/solid.css">
+
+
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Mike Thomsen's Blog Atom">
+
+    <link href="/index.xml" type="application/rss+xml" rel="alternate" title="Mike Thomsen's Blog RSS">
+
+
+
+
+<meta name="author" content="Mike Thomsen" />
+<meta name="description" content="If you have a NiFi component that you work on for your business/team, you can make it searchable using the Searchable interface. The following code sample is taken from NIFI-4406, which makes ExecuteScript searchable so that you can search for words inside of either the script body property or …" />
+<meta name="keywords" content="">
+
+
+<meta property="og:site_name" content="Mike Thomsen's Blog"/>
+<meta property="og:title" content="Making NiFi components searchable"/>
+<meta property="og:description" content="If you have a NiFi component that you work on for your business/team, you can make it searchable using the Searchable interface. The following code sample is taken from NIFI-4406, which makes ExecuteScript searchable so that you can search for words inside of either the script body property or …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="/posts/2019/06/27/making-nifi-components-searchable/"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2019-06-27 00:00:00-04:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="/author/mike-thomsen.html">
+<meta property="article:section" content="misc"/>
+<meta property="og:image" content="">
+
+  <title>Mike Thomsen's Blog &ndash; Making NiFi components searchable</title>
+
+</head>
+<body class="dark-theme">
+  <aside>
+    <div>
+      <a href="">
+        <img src="/img/profile.png" alt="" title="">
+      </a>
+
+      <h1>
+        <a href=""></a>
+      </h1>
+
+
+
+      <nav>
+        <ul class="list">
+
+
+              <li>
+                <a target="_self"
+                   href="/pages/about-me/#about-me">
+                  About Me
+                </a>
+              </li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-github" href="https://github.com/MikeThomsen" target="_blank">
+              <i class="fab fa-github"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-linkedin" href="https://www.linkedin.com/in/mike-thomsen-780341191" target="_blank">
+              <i class="fab fa-linkedin"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-stack-overflow" href="https://stackoverflow.com/users/284538/mike-thomsen" target="_blank">
+              <i class="fab fa-stack-overflow"></i>
+            </a>
+          </li>
+      </ul>
+    </div>
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="">Home</a>
+
+
+      <a href="/atom.xml">Atom</a>
+
+      <a href="/index.xml">RSS</a>
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="making-nifi-components-searchable">Making NiFi components searchable</h1>
+    <p>
+      Posted on Thu 27 June 2019 in <a href="/category/misc.html">misc</a>
+
+    </p>
+  </header>
+
+
+  <div>
+    <p>If you have a NiFi component that you work on for your business/team, you can make it searchable using the <code>Searchable</code> interface. The following code sample is taken from <a href="https://issues.apache.org/jira/browse/NIFI-4406">NIFI-4406</a>, which makes <code>ExecuteScript</code> searchable so that you can search for words inside of either the script body property or by loading the contents of the script file and searching that.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">org.apache.nifi.search.Searchable</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">Collection</span><span class="o">&lt;</span><span class="n">SearchResult</span><span class="o">&gt;</span> <span class="nf">search</span><span class="p">(</span><span class="n">SearchContext</span> <span class="n">context</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">Collection</span><span class="o">&lt;</span><span class="n">SearchResult</span><span class="o">&gt;</span> <span class="n">results</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;&gt;</span><span class="p">();</span>
+
+        <span class="n">String</span> <span class="n">term</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="na">getSearchTerm</span><span class="p">();</span>
+
+        <span class="n">String</span> <span class="n">scriptFile</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="na">getProperty</span><span class="p">(</span><span class="n">ScriptingComponentUtils</span><span class="p">.</span><span class="na">SCRIPT_FILE</span><span class="p">).</span><span class="na">evaluateAttributeExpressions</span><span class="p">().</span><span class="na">getValue</span><span class="p">();</span>
+        <span class="n">String</span> <span class="n">script</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="na">getProperty</span><span class="p">(</span><span class="n">ScriptingComponentUtils</span><span class="p">.</span><span class="na">SCRIPT_BODY</span><span class="p">).</span><span class="na">getValue</span><span class="p">();</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">StringUtils</span><span class="p">.</span><span class="na">isBlank</span><span class="p">(</span><span class="n">script</span><span class="p">))</span> <span class="p">{</span>
+            <span class="k">try</span> <span class="p">{</span>
+                <span class="n">script</span> <span class="o">=</span> <span class="n">IOUtils</span><span class="p">.</span><span class="na">toString</span><span class="p">(</span><span class="k">new</span> <span class="n">FileInputStream</span><span class="p">(</span><span class="n">scriptFile</span><span class="p">),</span> <span class="s">&quot;UTF-8&quot;</span><span class="p">);</span>
+            <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">getLogger</span><span class="p">().</span><span class="na">error</span><span class="p">(</span><span class="n">String</span><span class="p">.</span><span class="na">format</span><span class="p">(</span><span class="s">&quot;Could not read from path %s&quot;</span><span class="p">,</span> <span class="n">scriptFile</span><span class="p">),</span> <span class="n">e</span><span class="p">);</span>
+                <span class="k">return</span> <span class="n">results</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+        <span class="n">Scanner</span> <span class="n">scanner</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Scanner</span><span class="p">(</span><span class="n">script</span><span class="p">);</span>
+        <span class="kt">int</span> <span class="n">index</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+
+        <span class="k">while</span> <span class="p">(</span><span class="n">scanner</span><span class="p">.</span><span class="na">hasNextLine</span><span class="p">())</span> <span class="p">{</span>
+            <span class="n">String</span> <span class="n">line</span> <span class="o">=</span> <span class="n">scanner</span><span class="p">.</span><span class="na">nextLine</span><span class="p">();</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">StringUtils</span><span class="p">.</span><span class="na">containsIgnoreCase</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">term</span><span class="p">))</span> <span class="p">{</span>
+                <span class="n">String</span> <span class="n">text</span> <span class="o">=</span> <span class="n">String</span><span class="p">.</span><span class="na">format</span><span class="p">(</span><span class="s">&quot;Matched script at line %d: %s&quot;</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">line</span><span class="p">);</span>
+                <span class="n">results</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="k">new</span> <span class="n">SearchResult</span><span class="p">.</span><span class="na">Builder</span><span class="p">().</span><span class="na">label</span><span class="p">(</span><span class="n">text</span><span class="p">).</span><span class="na">match</span><span class="p">(</span><span class="n">term</span><span class="p">).</span><span class="na">build</span><span class="p">());</span>
+            <span class="p">}</span>
+            <span class="n">index</span><span class="o">++</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">results</span><span class="p">;</span>
+    <span class="p">}</span>
+</code></pre></div>
+
+<p>The pattern is pretty simple:</p>
+<ol>
+<li>Figure out what should be searched within the component.</li>
+<li>Build a collection of <code>SearchResult</code> objects if there are hits.</li>
+<li>Return an empty collection if there are not hits.</li>
+</ol>
+  </div>
+  <div class="tag-cloud">
+    <p>
+    </p>
+  </div>
+
+
+
+
+
+</article>
+
+    <footer>
+<p>
+  &copy; 2020  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p><p>
+  <a rel="license"
+     href="http://creativecommons.org/licenses/by-sa/4.0/"
+     target="_blank">
+    <img alt="Creative Commons License"
+         title="Creative Commons License"
+         style="border-width:0"
+           src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png"
+         width="80"
+         height="15"/>
+  </a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Mike Thomsen's Blog ",
+  "url" : "",
+  "image": "",
+  "description": ""
+}
+</script>
+
+
+</body>
+</html>

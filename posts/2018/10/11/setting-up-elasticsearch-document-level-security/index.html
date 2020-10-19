@@ -1,0 +1,386 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="/theme/stylesheet/style.min.css">
+
+    <link id="dark-theme-style" rel="stylesheet" type="text/css"
+    href="/theme/stylesheet/dark-theme.min.css">
+
+    <link id="pygments-dark-theme" rel="stylesheet" type="text/css"
+          href="/theme/pygments/monokai.min.css">
+
+
+  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/solid.css">
+
+
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Mike Thomsen's Blog Atom">
+
+    <link href="/index.xml" type="application/rss+xml" rel="alternate" title="Mike Thomsen's Blog RSS">
+
+
+
+
+<meta name="author" content="Mike Thomsen" />
+<meta name="description" content="Docker Compose version: &#34;3&#34; services: elasticsearch: image: docker.elastic.co/elasticsearch/elasticsearch:6.4.2 container_name: elasticsearch ports: - 9200:9200 - 9300:9300 environment: - &#34;discovery.type=single-node&#34; - &#34;xpack.security.enabled=true&#34; kibana: image: docker.elastic.co/kibana/kibana:6.4.2 container_name: kibana environment: - &#34;elasticsearch.username=elastic&#34; - &#34;elasticsearch.password=changeme&#34; ports …" />
+<meta name="keywords" content="elastic, nifi, security">
+
+
+<meta property="og:site_name" content="Mike Thomsen's Blog"/>
+<meta property="og:title" content="Setting up Elasticsearch Document-Level Security"/>
+<meta property="og:description" content="Docker Compose version: &#34;3&#34; services: elasticsearch: image: docker.elastic.co/elasticsearch/elasticsearch:6.4.2 container_name: elasticsearch ports: - 9200:9200 - 9300:9300 environment: - &#34;discovery.type=single-node&#34; - &#34;xpack.security.enabled=true&#34; kibana: image: docker.elastic.co/kibana/kibana:6.4.2 container_name: kibana environment: - &#34;elasticsearch.username=elastic&#34; - &#34;elasticsearch.password=changeme&#34; ports …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="/posts/2018/10/11/setting-up-elasticsearch-document-level-security/"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2018-10-11 08:47:00-04:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="/author/mike-thomsen.html">
+<meta property="article:section" content="misc"/>
+<meta property="article:tag" content="elastic"/>
+<meta property="article:tag" content="nifi"/>
+<meta property="article:tag" content="security"/>
+<meta property="og:image" content="">
+
+  <title>Mike Thomsen's Blog &ndash; Setting up Elasticsearch Document-Level Security</title>
+
+</head>
+<body class="dark-theme">
+  <aside>
+    <div>
+      <a href="">
+        <img src="/img/profile.png" alt="" title="">
+      </a>
+
+      <h1>
+        <a href=""></a>
+      </h1>
+
+
+
+      <nav>
+        <ul class="list">
+
+
+              <li>
+                <a target="_self"
+                   href="/pages/about-me/#about-me">
+                  About Me
+                </a>
+              </li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-github" href="https://github.com/MikeThomsen" target="_blank">
+              <i class="fab fa-github"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-linkedin" href="https://www.linkedin.com/in/mike-thomsen-780341191" target="_blank">
+              <i class="fab fa-linkedin"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-stack-overflow" href="https://stackoverflow.com/users/284538/mike-thomsen" target="_blank">
+              <i class="fab fa-stack-overflow"></i>
+            </a>
+          </li>
+      </ul>
+    </div>
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="">Home</a>
+
+
+      <a href="/atom.xml">Atom</a>
+
+      <a href="/index.xml">RSS</a>
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="setting-up-elasticsearch-document-level-security">Setting up Elasticsearch Document-Level Security</h1>
+    <p>
+      Posted on Thu 11 October 2018 in <a href="/category/misc.html">misc</a>
+
+    </p>
+  </header>
+
+
+  <div>
+    <h2>Docker Compose</h2>
+<div class="highlight"><pre><span></span><code><span class="c">version: &quot;3&quot;</span>
+<span class="c">services:</span>
+<span class="c">  elasticsearch:</span>
+<span class="c">    image: docker.elastic.co/elasticsearch/elasticsearch:6.4.2</span>
+<span class="c">    container_name: elasticsearch</span>
+<span class="c">    ports:</span>
+<span class="c">      - 9200:9200</span>
+<span class="c">      - 9300:9300</span>
+<span class="c">    environment:</span>
+<span class="c">      - &quot;discovery.type=single-node&quot;</span>
+<span class="c">      - &quot;xpack.security.enabled=true&quot;</span>
+<span class="c">  kibana:</span>
+<span class="c">    image: docker.elastic.co/kibana/kibana:6.4.2</span>
+<span class="c">    container_name: kibana</span>
+<span class="c">    environment:</span>
+<span class="c">      - &quot;elasticsearch.username=elastic&quot;</span>
+<span class="c">      - &quot;elasticsearch.password=changeme&quot;</span>
+<span class="c">    ports:</span>
+<span class="c">      - 5601:5601</span>
+<span class="c">    links:</span>
+<span class="c">      - elasticsearch</span>
+<span class="c">    volumes:</span>
+<span class="c">      - ./kibana.yml:/usr/share/kibana/config/kibana.yml:ro</span>
+</code></pre></div>
+
+<h2>Setup Passwords</h2>
+<p><code>docker exec -it elasticsearch bin/elasticsearch-setup-passwords interactive</code></p>
+<p>Set each one to <code>changeme</code>.</p>
+<h2>Create Test Index</h2>
+<div class="highlight"><pre><span></span><code><span class="err">PUT documents</span>
+<span class="err">{</span>
+<span class="err">  &quot;mappings&quot;: {</span>
+<span class="err">    &quot;document&quot;: {</span>
+<span class="err">      &quot;properties&quot;: {</span>
+<span class="err">        &quot;category&quot;: {</span>
+<span class="err">          &quot;type&quot;: &quot;keyword&quot;</span>
+<span class="err">        },</span>
+<span class="err">        &quot;document_id&quot;: {</span>
+<span class="err">          &quot;type&quot;: &quot;keyword&quot;</span>
+<span class="err">        },</span>
+<span class="err">        &quot;title&quot;: {</span>
+<span class="err">          &quot;type&quot;: &quot;text&quot;</span>
+<span class="err">        }</span>
+<span class="err">      }</span>
+<span class="err">    }</span>
+<span class="err">  }</span>
+<span class="err">}</span>
+</code></pre></div>
+
+<h2>Create User Roles</h2>
+<div class="highlight"><pre><span></span><code><span class="err">POST /_xpack/security/role/restricted_role</span>
+<span class="err">{</span>
+<span class="err">  &quot;indices&quot;: [</span>
+<span class="err">    {</span>
+<span class="err">      &quot;names&quot;: [ &quot;documents&quot; ],</span>
+<span class="err">      &quot;privileges&quot;: [ &quot;read&quot; ],</span>
+<span class="err">      &quot;query&quot;: &quot;{\&quot;match\&quot;: {\&quot;category\&quot;: \&quot;restricted\&quot;}}&quot;</span>
+<span class="err">    }</span>
+<span class="err">  ]</span>
+<span class="err">}</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="err">POST /_xpack/security/role/unrestricted_role</span>
+<span class="err">{</span>
+<span class="err">  &quot;indices&quot; : [</span>
+<span class="err">    {</span>
+<span class="err">      &quot;names&quot; : [ &quot;documents&quot; ],</span>
+<span class="err">      &quot;privileges&quot; : [ &quot;read&quot; ],</span>
+<span class="err">      &quot;query&quot;: &quot;{\&quot;bool\&quot;: {\&quot;must_not\&quot;: [ { \&quot;match\&quot;: { \&quot;category\&quot;: \&quot;restricted\&quot;}} ] } }&quot;</span>
+<span class="err">    }</span>
+<span class="err">  ]</span>
+<span class="err">}</span>
+</code></pre></div>
+
+<p>Create two users in Kibana as <code>elastic</code> user:</p>
+<ul>
+<li>unrestricted_user</li>
+<li>Roles: <code>kibana_user</code>, <code>restricted_role</code>, <code>unrestricted_role</code></li>
+<li>restricted_user</li>
+<li>Roles: <code>kibana_user</code>, <code>restricted_role</code></li>
+</ul>
+<h2>Add Sample Data</h2>
+<div class="highlight"><pre><span></span><code><span class="err">POST documents/document/1</span>
+<span class="err">{</span>
+<span class="err">  &quot;category&quot;: &quot;restricted&quot;,</span>
+<span class="err">  &quot;document_id&quot;: &quot;ABCDEFG&quot;,</span>
+<span class="err">  &quot;title&quot;: &quot;Hello, world&quot;</span>
+<span class="err">}</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="err">POST documents/document/2</span>
+<span class="err">{</span>
+<span class="err">  &quot;category&quot;: &quot;unrestricted&quot;,</span>
+<span class="err">  &quot;document_id&quot;: &quot;IJKLMN&quot;,</span>
+<span class="err">  &quot;title&quot;: &quot;Goodbye, cruel world&quot;</span>
+<span class="err">}</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="err">POST documents/document/3</span>
+<span class="err">{</span>
+<span class="err">  &quot;category&quot;: &quot;sensitive&quot;,</span>
+<span class="err">  &quot;document_id&quot;: &quot;OPQRS&quot;,</span>
+<span class="err">  &quot;title&quot;: &quot;Third category document&quot;</span>
+<span class="err">}</span>
+</code></pre></div>
+
+<h2>Testing</h2>
+<div class="highlight"><pre><span></span><code><span class="err">GET documents/_search</span>
+<span class="err">{</span>
+<span class="err">  &quot;query&quot;: {</span>
+<span class="err">    &quot;match_all&quot;: {}</span>
+<span class="err">  }</span>
+<span class="err">}</span>
+</code></pre></div>
+
+<h3>Expected Results For Unrestricted User</h3>
+<div class="highlight"><pre><span></span><code><span class="err">{</span>
+<span class="err">  &quot;took&quot;: 3,</span>
+<span class="err">  &quot;timed_out&quot;: false,</span>
+<span class="err">  &quot;_shards&quot;: {</span>
+<span class="err">    &quot;total&quot;: 5,</span>
+<span class="err">    &quot;successful&quot;: 5,</span>
+<span class="err">    &quot;skipped&quot;: 0,</span>
+<span class="err">    &quot;failed&quot;: 0</span>
+<span class="err">  },</span>
+<span class="err">  &quot;hits&quot;: {</span>
+<span class="err">    &quot;total&quot;: 3,</span>
+<span class="err">    &quot;max_score&quot;: 1,</span>
+<span class="err">    &quot;hits&quot;: [</span>
+<span class="err">      {</span>
+<span class="err">        &quot;_index&quot;: &quot;documents&quot;,</span>
+<span class="err">        &quot;_type&quot;: &quot;document&quot;,</span>
+<span class="err">        &quot;_id&quot;: &quot;2&quot;,</span>
+<span class="err">        &quot;_score&quot;: 1,</span>
+<span class="err">        &quot;_source&quot;: {</span>
+<span class="err">          &quot;category&quot;: &quot;unrestricted&quot;,</span>
+<span class="err">          &quot;document_id&quot;: &quot;IJKLMN&quot;,</span>
+<span class="err">          &quot;title&quot;: &quot;Goodbye, cruel world&quot;</span>
+<span class="err">        }</span>
+<span class="err">      },</span>
+<span class="err">      {</span>
+<span class="err">        &quot;_index&quot;: &quot;documents&quot;,</span>
+<span class="err">        &quot;_type&quot;: &quot;document&quot;,</span>
+<span class="err">        &quot;_id&quot;: &quot;1&quot;,</span>
+<span class="err">        &quot;_score&quot;: 1,</span>
+<span class="err">        &quot;_source&quot;: {</span>
+<span class="err">          &quot;category&quot;: &quot;restricted&quot;,</span>
+<span class="err">          &quot;document_id&quot;: &quot;ABCDEFG&quot;,</span>
+<span class="err">          &quot;title&quot;: &quot;Hello, world&quot;</span>
+<span class="err">        }</span>
+<span class="err">      },</span>
+<span class="err">      {</span>
+<span class="err">        &quot;_index&quot;: &quot;documents&quot;,</span>
+<span class="err">        &quot;_type&quot;: &quot;document&quot;,</span>
+<span class="err">        &quot;_id&quot;: &quot;3&quot;,</span>
+<span class="err">        &quot;_score&quot;: 1,</span>
+<span class="err">        &quot;_source&quot;: {</span>
+<span class="err">          &quot;category&quot;: &quot;sbu&quot;,</span>
+<span class="err">          &quot;document_id&quot;: &quot;OPQRS&quot;,</span>
+<span class="err">          &quot;title&quot;: &quot;Third category document&quot;</span>
+<span class="err">        }</span>
+<span class="err">      }</span>
+<span class="err">    ]</span>
+<span class="err">  }</span>
+<span class="err">}</span>
+</code></pre></div>
+
+<h3>Expected Results for Restricted User</h3>
+<div class="highlight"><pre><span></span><code><span class="err">{</span>
+<span class="err">  &quot;took&quot;: 3,</span>
+<span class="err">  &quot;timed_out&quot;: false,</span>
+<span class="err">  &quot;_shards&quot;: {</span>
+<span class="err">    &quot;total&quot;: 5,</span>
+<span class="err">    &quot;successful&quot;: 5,</span>
+<span class="err">    &quot;skipped&quot;: 0,</span>
+<span class="err">    &quot;failed&quot;: 0</span>
+<span class="err">  },</span>
+<span class="err">  &quot;hits&quot;: {</span>
+<span class="err">    &quot;total&quot;: 2,</span>
+<span class="err">    &quot;max_score&quot;: 1,</span>
+<span class="err">    &quot;hits&quot;: [</span>
+<span class="err">      {</span>
+<span class="err">        &quot;_index&quot;: &quot;documents&quot;,</span>
+<span class="err">        &quot;_type&quot;: &quot;document&quot;,</span>
+<span class="err">        &quot;_id&quot;: &quot;2&quot;,</span>
+<span class="err">        &quot;_score&quot;: 1,</span>
+<span class="err">        &quot;_source&quot;: {</span>
+<span class="err">          &quot;category&quot;: &quot;unrestricted&quot;,</span>
+<span class="err">          &quot;document_id&quot;: &quot;IJKLMN&quot;,</span>
+<span class="err">          &quot;title&quot;: &quot;Goodbye, cruel world&quot;</span>
+<span class="err">        }</span>
+<span class="err">      },</span>
+<span class="err">      {</span>
+<span class="err">        &quot;_index&quot;: &quot;documents&quot;,</span>
+<span class="err">        &quot;_type&quot;: &quot;document&quot;,</span>
+<span class="err">        &quot;_id&quot;: &quot;3&quot;,</span>
+<span class="err">        &quot;_score&quot;: 1,</span>
+<span class="err">        &quot;_source&quot;: {</span>
+<span class="err">          &quot;category&quot;: &quot;sbu&quot;,</span>
+<span class="err">          &quot;document_id&quot;: &quot;OPQRS&quot;,</span>
+<span class="err">          &quot;title&quot;: &quot;Third category document&quot;</span>
+<span class="err">        }</span>
+<span class="err">      }</span>
+<span class="err">    ]</span>
+<span class="err">  }</span>
+<span class="err">}</span>
+</code></pre></div>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="/tag/elastic.html">elastic</a>
+      <a href="/tag/nifi.html">nifi</a>
+      <a href="/tag/security.html">security</a>
+    </p>
+  </div>
+
+
+
+
+
+</article>
+
+    <footer>
+<p>
+  &copy; 2020  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p><p>
+  <a rel="license"
+     href="http://creativecommons.org/licenses/by-sa/4.0/"
+     target="_blank">
+    <img alt="Creative Commons License"
+         title="Creative Commons License"
+         style="border-width:0"
+           src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png"
+         width="80"
+         height="15"/>
+  </a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Mike Thomsen's Blog ",
+  "url" : "",
+  "image": "",
+  "description": ""
+}
+</script>
+
+
+</body>
+</html>

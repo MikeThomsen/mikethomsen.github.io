@@ -1,0 +1,260 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="/theme/stylesheet/style.min.css">
+
+    <link id="dark-theme-style" rel="stylesheet" type="text/css"
+    href="/theme/stylesheet/dark-theme.min.css">
+
+    <link id="pygments-dark-theme" rel="stylesheet" type="text/css"
+          href="/theme/pygments/monokai.min.css">
+
+
+  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/solid.css">
+
+
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Mike Thomsen's Blog Atom">
+
+    <link href="/index.xml" type="application/rss+xml" rel="alternate" title="Mike Thomsen's Blog RSS">
+
+
+
+
+<meta name="author" content="Mike Thomsen" />
+<meta name="description" content="Scenario: you get CSV files that relate to the same problem domain, but they have different headers. One of the problems that we&#39;ve faced in the past where I work is that our clients can get data that falls in the same problem domain from different sources, but they need …" />
+<meta name="keywords" content="">
+
+
+<meta property="og:site_name" content="Mike Thomsen's Blog"/>
+<meta property="og:title" content="&#34;Data Engineering Recipe: Normalizing different input files with minimal code&#34;"/>
+<meta property="og:description" content="Scenario: you get CSV files that relate to the same problem domain, but they have different headers. One of the problems that we&#39;ve faced in the past where I work is that our clients can get data that falls in the same problem domain from different sources, but they need …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="/posts/2019/09/13/data-engineering-recipe-normalizing-different-input-files-with-minimal-code/"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2019-09-13 08:50:00-04:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="/author/mike-thomsen.html">
+<meta property="article:section" content="misc"/>
+<meta property="og:image" content="">
+
+  <title>Mike Thomsen's Blog &ndash; &#34;Data Engineering Recipe: Normalizing different input files with minimal code&#34;</title>
+
+</head>
+<body class="dark-theme">
+  <aside>
+    <div>
+      <a href="">
+        <img src="/img/profile.png" alt="" title="">
+      </a>
+
+      <h1>
+        <a href=""></a>
+      </h1>
+
+
+
+      <nav>
+        <ul class="list">
+
+
+              <li>
+                <a target="_self"
+                   href="/pages/about-me/#about-me">
+                  About Me
+                </a>
+              </li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-github" href="https://github.com/MikeThomsen" target="_blank">
+              <i class="fab fa-github"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-linkedin" href="https://www.linkedin.com/in/mike-thomsen-780341191" target="_blank">
+              <i class="fab fa-linkedin"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-stack-overflow" href="https://stackoverflow.com/users/284538/mike-thomsen" target="_blank">
+              <i class="fab fa-stack-overflow"></i>
+            </a>
+          </li>
+      </ul>
+    </div>
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="">Home</a>
+
+
+      <a href="/atom.xml">Atom</a>
+
+      <a href="/index.xml">RSS</a>
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="data-engineering-recipe-normalizing-different-input-files-with-minimal-code">"Data Engineering Recipe: Normalizing different input files with minimal code"</h1>
+    <p>
+      Posted on Fri 13 September 2019 in <a href="/category/misc.html">misc</a>
+
+    </p>
+  </header>
+
+
+  <div>
+    <blockquote>
+<p>Scenario: you get CSV files that relate to the same problem domain, but they have different headers.</p>
+</blockquote>
+<p>One of the problems that we've faced in the past where I work is that our clients can get data that falls in the same problem domain from different sources, but they need to normalize it into a common format. It's fairly common problem, so the purpose of this post is to explain some easy strategies that will keep you from slinging too much Groovy or Python in favor of leveraging the features that NiFi has (partly due to the awesome capabilities of Apache Avro) to do a lot of the work for you.</p>
+<p>The NiFi Record API, fundamentally, is built on Apache Avro. The structure and capabilities it has are built on and extensions to what Apache Avro gives you out of the box. One of those features is the ability to define one or more aliases for a field name. Now, aliases are one-way, which is really helpful when you're using NiFi to do ETL tasks like normalizing data. Wrong header comes in, the right field name/header goes out. It also doesn't care if you give one field one alias or several hundred. The only real restriction is that you cannot have aliases and field names colliding. That means that field names must be unique amongst each other and there cannot be any overlap between aliases that one have one alias resolving to two or more fields.</p>
+<p>Consider these CSV files:</p>
+<div class="highlight"><pre><span></span><code>fname,lname,failed_logins
+John,Smith,2
+Jane,Doe,1
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>first_name,last_name,failed_login_attempts
+John,Brown,3
+Jane,Smith,2
+</code></pre></div>
+
+<p>This is the only Avro needed to resolve that into a single input:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;UserRecord&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;record&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;fields&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;firstName&quot;</span><span class="p">,</span> <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span> <span class="nt">&quot;aliases&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="s2">&quot;fname&quot;</span><span class="p">,</span> <span class="s2">&quot;first_name&quot;</span> <span class="p">]</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;lastName&quot;</span><span class="p">,</span> <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span> <span class="nt">&quot;aliases&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="s2">&quot;lname&quot;</span><span class="p">,</span> <span class="s2">&quot;last_name&quot;</span> <span class="p">]</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;failedLoginCount&quot;</span><span class="p">,</span> <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;int&quot;</span><span class="p">,</span> <span class="nt">&quot;aliases&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="s2">&quot;failed_logins&quot;</span><span class="p">,</span> <span class="s2">&quot;failed_login_attempts&quot;</span> <span class="p">]</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>If your data sources are following good practices like not putting multi-line headers (ex. top row is meant to categorize the real headers below it) and not repeating header names, you can almost always stop at that point. If not, you might have to write some Groovy code for <code>ExecuteScript</code> to peek at the CSV file and inspect the top few lines with a Java <code>Scanner</code> object to see what you're getting. Event that is not that difficult. For example, this is one way to handle repeated headers if they're repeated consistently (never underestimate the ability of people to get things like this amazingly inconsistent).</p>
+<div class="highlight"><pre><span></span><code><span class="kt">def</span> <span class="n">is</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="na">read</span><span class="o">(</span><span class="n">flowFile</span><span class="o">)</span>
+<span class="kt">def</span> <span class="n">scanner</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Scanner</span><span class="o">(</span><span class="n">is</span><span class="o">)</span>
+<span class="kt">def</span> <span class="n">topThree</span> <span class="o">=</span> <span class="o">[</span>
+    <span class="n">scanner</span><span class="o">.</span><span class="na">nextLine</span><span class="o">(),</span>
+    <span class="n">scanner</span><span class="o">.</span><span class="na">nextLine</span><span class="o">(),</span>
+    <span class="n">scanner</span><span class="o">.</span><span class="na">nextLine</span><span class="o">()</span>
+<span class="o">]</span>
+<span class="kt">def</span> <span class="n">correctHeader</span> <span class="o">=</span> <span class="kc">null</span>
+<span class="kt">def</span> <span class="n">savedLines</span> <span class="o">=</span> <span class="o">[]</span>
+<span class="n">topThree</span><span class="o">.</span><span class="na">each</span> <span class="o">{</span> <span class="n">line</span> <span class="o">-&gt;</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">correctHeader</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">savedLines</span> <span class="o">&lt;&lt;</span> <span class="n">line</span>
+        <span class="k">return</span>
+    <span class="o">}</span>
+
+    <span class="n">line</span><span class="o">?.</span><span class="na">with</span> <span class="o">{</span>
+        <span class="kt">def</span> <span class="n">parts</span> <span class="o">=</span> <span class="n">it</span><span class="o">.</span><span class="na">split</span><span class="o">(</span><span class="s2">&quot;,&quot;</span><span class="o">)</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">parts</span><span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="s2">&quot;SOME_HEADER_FIELD&quot;</span><span class="o">))</span> <span class="o">{</span>
+            <span class="c1">//Found likely header line</span>
+            <span class="kt">def</span> <span class="n">duplicates</span> <span class="o">=</span> <span class="o">[]</span>
+            <span class="kt">def</span> <span class="n">headerLine</span> <span class="o">=</span> <span class="n">it</span>
+            <span class="n">parts</span><span class="o">.</span><span class="na">each</span> <span class="o">{</span> <span class="n">part</span> <span class="o">-&gt;</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">parts</span><span class="o">.</span><span class="na">findAll</span> <span class="o">{</span> <span class="n">it</span> <span class="o">==</span> <span class="n">part</span> <span class="o">}.</span><span class="na">size</span><span class="o">()</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="n">duplicates</span> <span class="o">&lt;&lt;</span> <span class="n">part</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">duplicates</span><span class="o">)</span> <span class="o">{</span>
+                <span class="kt">def</span> <span class="n">handledDuplicates</span> <span class="o">=</span> <span class="o">[:]</span>
+                <span class="kt">def</span> <span class="n">newHeaderTokens</span> <span class="o">=</span> <span class="o">[]</span>
+                <span class="n">parts</span><span class="o">.</span><span class="na">each</span> <span class="o">{</span> <span class="n">part</span> <span class="o">-&gt;</span>
+                    <span class="kt">def</span> <span class="n">newToken</span> <span class="o">=</span> <span class="n">part</span>
+                    <span class="k">if</span> <span class="o">((</span><span class="n">part</span> <span class="k">in</span> <span class="n">duplicates</span><span class="o">)</span> <span class="o">&amp;&amp;</span> <span class="o">!(</span><span class="n">part</span> <span class="k">in</span> <span class="n">handledDuplicates</span><span class="o">.</span><span class="na">keySet</span><span class="o">()))</span> <span class="o">{</span>
+                        <span class="n">handledDuplicates</span><span class="o">[</span><span class="n">part</span><span class="o">]</span> <span class="o">=</span> <span class="mi">2</span>
+                    <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">((</span><span class="n">part</span> <span class="k">in</span> <span class="n">duplicates</span><span class="o">)</span> <span class="o">&amp;&amp;</span> <span class="o">(</span><span class="n">part</span> <span class="k">in</span> <span class="n">handledDuplicates</span><span class="o">.</span><span class="na">keySet</span><span class="o">()))</span> <span class="o">{</span>
+                        <span class="n">newToken</span> <span class="o">=</span> <span class="s2">&quot;${part}_${handledDuplicates[part]}&quot;</span>
+                        <span class="n">handledDuplicates</span><span class="o">[</span><span class="n">part</span><span class="o">]</span> <span class="o">=</span> <span class="n">handledDuplicates</span><span class="o">[</span><span class="n">part</span><span class="o">]</span> <span class="o">+</span> <span class="mi">1</span>
+                    <span class="o">}</span>
+
+                    <span class="n">newHeaderTokens</span> <span class="o">&lt;&lt;</span> <span class="n">newToken</span>
+                <span class="o">}</span>
+                <span class="n">headerLine</span> <span class="o">=</span> <span class="n">newHeaderTokens</span><span class="o">.</span><span class="na">join</span><span class="o">(</span><span class="s2">&quot;,&quot;</span><span class="o">)</span>
+            <span class="o">}</span>
+
+            <span class="n">correctHeader</span> <span class="o">=</span> <span class="n">headerLine</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="k">while</span> <span class="o">(</span><span class="n">scanner</span><span class="o">.</span><span class="na">hasNextLine</span><span class="o">())</span> <span class="o">{</span>
+    <span class="n">savedLines</span> <span class="o">&lt;&lt;</span> <span class="n">scanner</span><span class="o">.</span><span class="na">nextLine</span><span class="o">()</span>
+<span class="o">}</span>
+<span class="c1">//Finish processing</span>
+</code></pre></div>
+  </div>
+  <div class="tag-cloud">
+    <p>
+    </p>
+  </div>
+
+
+
+
+
+</article>
+
+    <footer>
+<p>
+  &copy; 2020  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p><p>
+  <a rel="license"
+     href="http://creativecommons.org/licenses/by-sa/4.0/"
+     target="_blank">
+    <img alt="Creative Commons License"
+         title="Creative Commons License"
+         style="border-width:0"
+           src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png"
+         width="80"
+         height="15"/>
+  </a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Mike Thomsen's Blog ",
+  "url" : "",
+  "image": "",
+  "description": ""
+}
+</script>
+
+
+</body>
+</html>

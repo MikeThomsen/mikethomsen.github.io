@@ -1,0 +1,198 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="/theme/stylesheet/style.min.css">
+
+    <link id="dark-theme-style" rel="stylesheet" type="text/css"
+    href="/theme/stylesheet/dark-theme.min.css">
+
+    <link id="pygments-dark-theme" rel="stylesheet" type="text/css"
+          href="/theme/pygments/monokai.min.css">
+
+
+  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/solid.css">
+
+
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Mike Thomsen's Blog Atom">
+
+    <link href="/index.xml" type="application/rss+xml" rel="alternate" title="Mike Thomsen's Blog RSS">
+
+
+
+
+<meta name="author" content="Mike Thomsen" />
+<meta name="description" content="KSQL and Apache NiFi (Part I) If you haven&#39;t heard about KSQL, which is Confluent&#39;s new(ish) SQL engine built on top of Apache Kafka, check out some of these links: KSQL Product Page KSQL in Action Writing Streaming Queries against Kafka using KSQL So let&#39;s say you want to …" />
+<meta name="keywords" content="nifi">
+
+
+<meta property="og:site_name" content="Mike Thomsen's Blog"/>
+<meta property="og:title" content="KSQL and Apache NiFi (Part I)"/>
+<meta property="og:description" content="KSQL and Apache NiFi (Part I) If you haven&#39;t heard about KSQL, which is Confluent&#39;s new(ish) SQL engine built on top of Apache Kafka, check out some of these links: KSQL Product Page KSQL in Action Writing Streaming Queries against Kafka using KSQL So let&#39;s say you want to …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="/posts/2018/05/07/ksql-and-apache-nifi-part-i/"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2018-05-07 17:47:00-04:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="/author/mike-thomsen.html">
+<meta property="article:section" content="misc"/>
+<meta property="article:tag" content="nifi"/>
+<meta property="og:image" content="">
+
+  <title>Mike Thomsen's Blog &ndash; KSQL and Apache NiFi (Part I)</title>
+
+</head>
+<body class="dark-theme">
+  <aside>
+    <div>
+      <a href="">
+        <img src="/img/profile.png" alt="" title="">
+      </a>
+
+      <h1>
+        <a href=""></a>
+      </h1>
+
+
+
+      <nav>
+        <ul class="list">
+
+
+              <li>
+                <a target="_self"
+                   href="/pages/about-me/#about-me">
+                  About Me
+                </a>
+              </li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-github" href="https://github.com/MikeThomsen" target="_blank">
+              <i class="fab fa-github"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-linkedin" href="https://www.linkedin.com/in/mike-thomsen-780341191" target="_blank">
+              <i class="fab fa-linkedin"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-stack-overflow" href="https://stackoverflow.com/users/284538/mike-thomsen" target="_blank">
+              <i class="fab fa-stack-overflow"></i>
+            </a>
+          </li>
+      </ul>
+    </div>
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="">Home</a>
+
+
+      <a href="/atom.xml">Atom</a>
+
+      <a href="/index.xml">RSS</a>
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="ksql-and-apache-nifi-part-i">KSQL and Apache NiFi (Part I)</h1>
+    <p>
+      Posted on Mon 07 May 2018 in <a href="/category/misc.html">misc</a>
+
+    </p>
+  </header>
+
+
+  <div>
+    <h1>KSQL and Apache NiFi (Part I)</h1>
+<p>If you haven't heard about KSQL, which is Confluent's new(ish) SQL engine built on top of Apache Kafka, check out some of these links:</p>
+<ul>
+<li><a href="https://www.confluent.io/product/ksql/">KSQL Product Page</a></li>
+<li><a href="https://www.confluent.io/blog/ksql-in-action-real-time-streaming-etl-from-oracle-transactional-data">KSQL in Action</a></li>
+<li><a href="https://docs.confluent.io/current/ksql/docs/tutorials/basics-docker.html#ksql-quickstart-docker">Writing Streaming Queries against Kafka using KSQL</a></li>
+</ul>
+<p>So let's say you want to track a bunch of messages published by your users using a simple JSON format that looks like this:</p>
+<div class="highlight"><pre><span></span><code><span class="err">{</span>
+<span class="err">    &quot;username&quot;: &quot;john.smith&quot;,</span>
+<span class="err">    &quot;msg&quot;: &quot;Hello, world&quot;</span>
+<span class="err">}</span>
+</code></pre></div>
+
+<p>Using KSQL, you can define a Kafka Stream from the topic <code>input_messages</code> using the following KSQL statement:</p>
+<div class="highlight"><pre><span></span><code><span class="err">CREATE STREAM messages (username varchar, msg varchar) WITH (kafka_topic=&#39;input_messages&#39;, value_format=&#39;JSON&#39;);</span>
+</code></pre></div>
+
+<p>For now, that doesn't do much for you beyond create a topic and let you run SQL statements like SELECT operations on it. However, suppose you want to spy on <code>john.smith</code>. You can now do this:</p>
+<div class="highlight"><pre><span></span><code><span class="err">CREATE STREAM from_john_smith WITH (kafka_topic=&#39;from_john_smith&#39;, value_format=&#39;JSON&#39;) AS SELECT username, msg FROM messages WHERE username = &#39;john.smith&#39;;</span>
+</code></pre></div>
+
+<p>Now you've chained a new stream onto the <code>messages</code> stream and KSQL will examine incoming messages in the <code>messages</code> stream and put them into the topic that is the foundation for the <code>from_john_smith</code> stream. A traditional Kafka consumer client can just subscribe to <code>from_john_smith</code> (the topic) and be blissfully ignorant of the routing details that got the message there.</p>
+<p>This is where Apache NiFi can come in. Apache NiFi is very high throughput for processing ETL operations, particularly from sources like Kafka. However, like all ETL and data orchestration systems it can get complicated if you have to put the data routing rules in NiFi as needs change. Whhat KSQL provides here is the ability to focus in NiFi purely on the business logic of what to actually do with the data once it is pulled from the Kafka topics. The management of data flow to Kafka and within Kafka can be turned over primarily to KSQL.</p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="/tag/nifi.html">nifi</a>
+    </p>
+  </div>
+
+
+
+
+
+</article>
+
+    <footer>
+<p>
+  &copy; 2020  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p><p>
+  <a rel="license"
+     href="http://creativecommons.org/licenses/by-sa/4.0/"
+     target="_blank">
+    <img alt="Creative Commons License"
+         title="Creative Commons License"
+         style="border-width:0"
+           src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png"
+         width="80"
+         height="15"/>
+  </a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Mike Thomsen's Blog ",
+  "url" : "",
+  "image": "",
+  "description": ""
+}
+</script>
+
+
+</body>
+</html>

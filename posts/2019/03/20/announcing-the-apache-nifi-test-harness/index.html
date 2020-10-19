@@ -1,0 +1,231 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="/theme/stylesheet/style.min.css">
+
+    <link id="dark-theme-style" rel="stylesheet" type="text/css"
+    href="/theme/stylesheet/dark-theme.min.css">
+
+    <link id="pygments-dark-theme" rel="stylesheet" type="text/css"
+          href="/theme/pygments/monokai.min.css">
+
+
+  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/solid.css">
+
+
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Mike Thomsen's Blog Atom">
+
+    <link href="/index.xml" type="application/rss+xml" rel="alternate" title="Mike Thomsen's Blog RSS">
+
+
+
+
+<meta name="author" content="Mike Thomsen" />
+<meta name="description" content="Peter Horvath provided us with a great new feature pull request that adds a test harness for running a live NiFi instance within a JUnit integration test. For now, the feature is only officially included in the unreleased 1.10.0-SNAPSHOT code on GitHub, but I put out a stable …" />
+<meta name="keywords" content="">
+
+
+<meta property="og:site_name" content="Mike Thomsen's Blog"/>
+<meta property="og:title" content="Announcing the Apache NiFi Test Harness"/>
+<meta property="og:description" content="Peter Horvath provided us with a great new feature pull request that adds a test harness for running a live NiFi instance within a JUnit integration test. For now, the feature is only officially included in the unreleased 1.10.0-SNAPSHOT code on GitHub, but I put out a stable …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="/posts/2019/03/20/announcing-the-apache-nifi-test-harness/"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2019-03-20 00:00:00-04:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="/author/mike-thomsen.html">
+<meta property="article:section" content="misc"/>
+<meta property="og:image" content="">
+
+  <title>Mike Thomsen's Blog &ndash; Announcing the Apache NiFi Test Harness</title>
+
+</head>
+<body class="dark-theme">
+  <aside>
+    <div>
+      <a href="">
+        <img src="/img/profile.png" alt="" title="">
+      </a>
+
+      <h1>
+        <a href=""></a>
+      </h1>
+
+
+
+      <nav>
+        <ul class="list">
+
+
+              <li>
+                <a target="_self"
+                   href="/pages/about-me/#about-me">
+                  About Me
+                </a>
+              </li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-github" href="https://github.com/MikeThomsen" target="_blank">
+              <i class="fab fa-github"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-linkedin" href="https://www.linkedin.com/in/mike-thomsen-780341191" target="_blank">
+              <i class="fab fa-linkedin"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-stack-overflow" href="https://stackoverflow.com/users/284538/mike-thomsen" target="_blank">
+              <i class="fab fa-stack-overflow"></i>
+            </a>
+          </li>
+      </ul>
+    </div>
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="">Home</a>
+
+
+      <a href="/atom.xml">Atom</a>
+
+      <a href="/index.xml">RSS</a>
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="announcing-the-apache-nifi-test-harness">Announcing the Apache NiFi Test Harness</h1>
+    <p>
+      Posted on Wed 20 March 2019 in <a href="/category/misc.html">misc</a>
+
+    </p>
+  </header>
+
+
+  <div>
+    <p><a href="https://github.com/peter-gergely-horvath/">Peter Horvath</a> provided us with a great new feature pull request that adds a test harness for running a live NiFi instance within a JUnit integration test. For now, the feature is only officially included in the unreleased 1.10.0-SNAPSHOT code on GitHub, but I put out a stable build as a separate project that targets NiFi 1.8.0 <a href="https://github.com/MikeThomsen/nifi-testharness">here</a>.</p>
+<p>Right now, it is still a MVP/experimental API so some tweaking and experimentation in building integration tests around it will be necessary. That said, this is a code sample of what it looks like in use:</p>
+<div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="n">NiFiMockFlowTest</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">private</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="n">final</span><span class="w"> </span><span class="n">InputStream</span><span class="w"> </span><span class="n">DEMO_DATA_AS_STREAM</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="w">            </span><span class="n">NiFiMockFlowTest</span><span class="p">.</span><span class="k">class</span><span class="p">.</span><span class="n">getResourceAsStream</span><span class="p">(</span><span class="ss">&quot;/sample_technology_rss.xml&quot;</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="n">MockedGetHTTP</span><span class="w"> </span><span class="n">extends</span><span class="w"> </span><span class="n">GetHTTPMock</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">public</span><span class="w"> </span><span class="n">MockedGetHTTP</span><span class="p">()</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">super</span><span class="p">(</span><span class="ss">&quot;text/xml; charset=utf-8&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">DEMO_DATA_AS_STREAM</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="err">}</span><span class="w"></span>
+<span class="w">    </span><span class="err">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">private</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="n">final</span><span class="w"> </span><span class="n">SimpleNiFiFlowDefinitionEditor</span><span class="w"> </span><span class="n">CONFIGURE_MOCKS_IN_NIFI_FLOW</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SimpleNiFiFlowDefinitionEditor</span><span class="p">.</span><span class="n">builder</span><span class="p">()</span><span class="w"></span>
+<span class="w">            </span><span class="p">.</span><span class="n">updateFlowFileBuiltInNiFiProcessorVersionsToNiFiVersion</span><span class="p">()</span><span class="w"></span>
+<span class="w">            </span><span class="p">.</span><span class="n">setClassOfSingleProcessor</span><span class="p">(</span><span class="ss">&quot;GetHTTP&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">MockedGetHTTP</span><span class="p">.</span><span class="k">class</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="p">.</span><span class="n">build</span><span class="p">();</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">private</span><span class="w"> </span><span class="n">TestNiFiInstance</span><span class="w"> </span><span class="n">testNiFiInstance</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">    </span><span class="nv">@Before</span><span class="w"></span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">void</span><span class="w"> </span><span class="n">bootstrapNiFi</span><span class="p">()</span><span class="w"> </span><span class="n">throws</span><span class="w"> </span><span class="k">Exception</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Constants</span><span class="p">.</span><span class="n">OUTPUT_DIR</span><span class="p">.</span><span class="ow">exists</span><span class="p">())</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">FileUtils</span><span class="p">.</span><span class="n">deleteDirectoryRecursive</span><span class="p">(</span><span class="n">Constants</span><span class="p">.</span><span class="n">OUTPUT_DIR</span><span class="p">.</span><span class="n">toPath</span><span class="p">());</span><span class="w"></span>
+<span class="w">        </span><span class="err">}</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">File</span><span class="w"> </span><span class="n">nifiZipFile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TestUtils</span><span class="p">.</span><span class="n">getBinaryDistributionZipFile</span><span class="p">(</span><span class="n">Constants</span><span class="p">.</span><span class="n">NIFI_ZIP_DIR</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">        </span><span class="n">TestNiFiInstance</span><span class="w"> </span><span class="n">testNiFi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TestNiFiInstance</span><span class="p">.</span><span class="n">builder</span><span class="p">()</span><span class="w"></span>
+<span class="w">                </span><span class="p">.</span><span class="n">setNiFiBinaryDistributionZip</span><span class="p">(</span><span class="n">nifiZipFile</span><span class="p">)</span><span class="w"></span>
+<span class="w">                </span><span class="p">.</span><span class="n">setFlowXmlToInstallForTesting</span><span class="p">(</span><span class="n">Constants</span><span class="p">.</span><span class="n">FLOW_XML_FILE</span><span class="p">)</span><span class="w"></span>
+<span class="w">                </span><span class="p">.</span><span class="n">modifyFlowXmlBeforeInstalling</span><span class="p">(</span><span class="n">CONFIGURE_MOCKS_IN_NIFI_FLOW</span><span class="p">)</span><span class="w"></span>
+<span class="w">                </span><span class="p">.</span><span class="n">build</span><span class="p">();</span><span class="w"></span>
+
+<span class="w">        </span><span class="n">testNiFi</span><span class="p">.</span><span class="n">install</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="n">testNiFi</span><span class="p">.</span><span class="k">start</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="n">testNiFiInstance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">testNiFi</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="err">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="nv">@Test</span><span class="w"></span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">void</span><span class="w"> </span><span class="n">testFlowCreatesFilesInCorrectLocation</span><span class="p">()</span><span class="w"> </span><span class="n">throws</span><span class="w"> </span><span class="n">IOException</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">assertTrue</span><span class="p">(</span><span class="ss">&quot;Output directory not found: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">Constants</span><span class="p">.</span><span class="n">OUTPUT_DIR</span><span class="p">,</span><span class="w"> </span><span class="n">Constants</span><span class="p">.</span><span class="n">OUTPUT_DIR</span><span class="p">.</span><span class="ow">exists</span><span class="p">());</span><span class="w"></span>
+<span class="w">        </span><span class="k">File</span><span class="w"> </span><span class="n">outputFile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="k">File</span><span class="p">(</span><span class="n">Constants</span><span class="p">.</span><span class="n">OUTPUT_DIR</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;bbc-world.rss.xml&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="n">assertTrue</span><span class="p">(</span><span class="ss">&quot;Output file not found: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">outputFile</span><span class="p">,</span><span class="w"> </span><span class="n">outputFile</span><span class="p">.</span><span class="ow">exists</span><span class="p">());</span><span class="w"></span>
+<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">strings</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Files</span><span class="p">.</span><span class="n">readAllLines</span><span class="p">(</span><span class="n">outputFile</span><span class="p">.</span><span class="n">toPath</span><span class="p">());</span><span class="w"></span>
+<span class="w">        </span><span class="k">boolean</span><span class="w"> </span><span class="n">atLeastOneLineContainsNiFi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">strings</span><span class="p">.</span><span class="n">stream</span><span class="p">().</span><span class="n">anyMatch</span><span class="p">(</span><span class="n">line</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">line</span><span class="p">.</span><span class="n">toLowerCase</span><span class="p">().</span><span class="k">contains</span><span class="p">(</span><span class="ss">&quot;nifi&quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">        </span><span class="n">assertTrue</span><span class="p">(</span><span class="ss">&quot;There was no line containing NiFi&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">atLeastOneLineContainsNiFi</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="k">boolean</span><span class="w"> </span><span class="n">atLeastOneLineContainsNiFiVersion</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">strings</span><span class="p">.</span><span class="n">stream</span><span class="p">().</span><span class="n">anyMatch</span><span class="p">(</span><span class="n">line</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">line</span><span class="p">.</span><span class="n">toLowerCase</span><span class="p">().</span><span class="k">contains</span><span class="p">(</span><span class="ss">&quot;latest nifi version&quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">        </span><span class="n">assertTrue</span><span class="p">(</span><span class="ss">&quot;There was no line containing &#39;latest NiFi version&#39;&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">atLeastOneLineContainsNiFiVersion</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="err">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="nv">@After</span><span class="w"></span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">void</span><span class="w"> </span><span class="n">shutdownNiFi</span><span class="p">()</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">testNiFiInstance</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="k">null</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">testNiFiInstance</span><span class="p">.</span><span class="n">stopAndCleanup</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="err">}</span><span class="w"></span>
+<span class="w">    </span><span class="err">}</span><span class="w"></span>
+<span class="err">}</span><span class="w"></span>
+</code></pre></div>
+  </div>
+  <div class="tag-cloud">
+    <p>
+    </p>
+  </div>
+
+
+
+
+
+</article>
+
+    <footer>
+<p>
+  &copy; 2020  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p><p>
+  <a rel="license"
+     href="http://creativecommons.org/licenses/by-sa/4.0/"
+     target="_blank">
+    <img alt="Creative Commons License"
+         title="Creative Commons License"
+         style="border-width:0"
+           src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png"
+         width="80"
+         height="15"/>
+  </a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Mike Thomsen's Blog ",
+  "url" : "",
+  "image": "",
+  "description": ""
+}
+</script>
+
+
+</body>
+</html>
