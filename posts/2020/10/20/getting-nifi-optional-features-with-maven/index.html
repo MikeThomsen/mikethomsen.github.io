@@ -176,9 +176,72 @@
       <span class="nt">&lt;type&gt;</span>nar<span class="nt">&lt;/type&gt;</span>
     <span class="nt">&lt;/dependency&gt;</span>
   <span class="nt">&lt;/dependencies&gt;</span>
+  <span class="nt">&lt;build&gt;</span>
+    <span class="nt">&lt;plugins&gt;</span>
+      <span class="nt">&lt;plugin&gt;</span>
+        <span class="nt">&lt;artifactId&gt;</span>maven-dependency-plugin<span class="nt">&lt;/artifactId&gt;</span>
+        <span class="nt">&lt;configuration&gt;</span>
+          <span class="nt">&lt;excludeTransitive&gt;</span>true<span class="nt">&lt;/excludeTransitive&gt;</span>
+        <span class="nt">&lt;/configuration&gt;</span>
+        <span class="nt">&lt;executions&gt;</span>
+          <span class="nt">&lt;execution&gt;</span>
+            <span class="nt">&lt;phase&gt;</span>package<span class="nt">&lt;/phase&gt;</span>
+            <span class="nt">&lt;goals&gt;</span>
+              <span class="nt">&lt;goal&gt;</span>copy-dependencies<span class="nt">&lt;/goal&gt;</span>
+            <span class="nt">&lt;/goals&gt;</span>
+            <span class="nt">&lt;configuration&gt;</span>
+              <span class="nt">&lt;outputDirectory&gt;</span>${project.build.directory}/lib<span class="nt">&lt;/outputDirectory&gt;</span>
+            <span class="nt">&lt;/configuration&gt;</span>
+          <span class="nt">&lt;/execution&gt;</span>
+        <span class="nt">&lt;/executions&gt;</span>
+      <span class="nt">&lt;/plugin&gt;</span>
+      <span class="nt">&lt;plugin&gt;</span>
+        <span class="nt">&lt;artifactId&gt;</span>maven-assembly-plugin<span class="nt">&lt;/artifactId&gt;</span>
+        <span class="nt">&lt;version&gt;</span>3.1.1<span class="nt">&lt;/version&gt;</span>
+        <span class="nt">&lt;configuration&gt;</span>
+          <span class="nt">&lt;descriptors&gt;</span>
+            <span class="nt">&lt;descriptor&gt;</span>src/main/assembly/assembly.xml<span class="nt">&lt;/descriptor&gt;</span>
+          <span class="nt">&lt;/descriptors&gt;</span>
+          <span class="nt">&lt;finalName&gt;</span>nifi-contrib-nars<span class="nt">&lt;/finalName&gt;</span>
+        <span class="nt">&lt;/configuration&gt;</span>
+        <span class="nt">&lt;executions&gt;</span>
+          <span class="nt">&lt;execution&gt;</span>
+            <span class="nt">&lt;id&gt;</span>make-assembly<span class="nt">&lt;/id&gt;</span>
+            <span class="c">&lt;!-- this is used for inheritance merges --&gt;</span>
+            <span class="nt">&lt;phase&gt;</span>package<span class="nt">&lt;/phase&gt;</span>
+            <span class="c">&lt;!-- bind to the packaging phase --&gt;</span>
+            <span class="nt">&lt;goals&gt;</span>
+              <span class="nt">&lt;goal&gt;</span>single<span class="nt">&lt;/goal&gt;</span>
+            <span class="nt">&lt;/goals&gt;</span>
+          <span class="nt">&lt;/execution&gt;</span>
+        <span class="nt">&lt;/executions&gt;</span>
+      <span class="nt">&lt;/plugin&gt;</span>
+    <span class="nt">&lt;/plugins&gt;</span>
+  <span class="nt">&lt;/build&gt;</span>
 <span class="nt">&lt;/project&gt;</span>
 </code></pre></div>
 
+<p>With this assembly configuration:</p>
+<div class="highlight"><pre><span></span><code><span class="cp">&lt;?xml version=&quot;1.0&quot;?&gt;</span>
+<span class="nt">&lt;assembly</span> <span class="na">xmlns=</span><span class="s">&quot;http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2&quot;</span> <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;id&gt;</span>assembly<span class="nt">&lt;/id&gt;</span>
+  <span class="nt">&lt;baseDirectory&gt;</span>/<span class="nt">&lt;/baseDirectory&gt;</span>
+  <span class="nt">&lt;formats&gt;</span>
+    <span class="nt">&lt;format&gt;</span>zip<span class="nt">&lt;/format&gt;</span>
+  <span class="nt">&lt;/formats&gt;</span>
+  <span class="nt">&lt;fileSets&gt;</span>
+    <span class="nt">&lt;fileSet&gt;</span>
+      <span class="nt">&lt;directory&gt;</span>${basedir}/target/lib<span class="nt">&lt;/directory&gt;</span>
+      <span class="nt">&lt;outputDirectory&gt;</span>./<span class="nt">&lt;/outputDirectory&gt;</span>
+      <span class="nt">&lt;includes&gt;</span>
+        <span class="nt">&lt;include&gt;</span>**<span class="nt">&lt;/include&gt;</span>
+      <span class="nt">&lt;/includes&gt;</span>
+    <span class="nt">&lt;/fileSet&gt;</span>
+  <span class="nt">&lt;/fileSets&gt;</span>
+<span class="nt">&lt;/assembly&gt;</span>
+</code></pre></div>
+
+<p>A working version of this as a ready-made git repository can be <a href="https://github.com/MikeThomsen/nifi-contrib-assembly/tags">downloaded here</a>.</p>
 <p>And if you want to build a custom NiFi Docker image that brings in these NARS, it's this easy:</p>
 <div class="highlight"><pre><span></span><code><span class="k">FROM</span> <span class="s">maven:3</span> <span class="k">AS</span> <span class="s">build</span>
 
