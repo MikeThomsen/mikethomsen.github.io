@@ -1,0 +1,204 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="/theme/stylesheet/style.min.css">
+
+    <link id="dark-theme-style" rel="stylesheet" type="text/css"
+    href="/theme/stylesheet/dark-theme.min.css">
+
+    <link id="pygments-dark-theme" rel="stylesheet" type="text/css"
+          href="/theme/pygments/monokai.min.css">
+
+
+  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/solid.css">
+
+
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Mike Thomsen's Blog Atom">
+
+    <link href="/index.xml" type="application/rss+xml" rel="alternate" title="Mike Thomsen's Blog RSS">
+
+
+
+
+    <meta name="author" content="Mike Thomsen" />
+    <meta name="description" content="" />
+<meta property="og:site_name" content="Mike Thomsen's Blog"/>
+<meta property="og:type" content="blog"/>
+<meta property="og:title" content="Mike Thomsen's Blog"/>
+<meta property="og:description" content=""/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content=""/>
+
+  <title>Mike Thomsen's Blog &ndash; Tag hadoop</title>
+
+</head>
+<body class="dark-theme">
+  <aside>
+    <div>
+      <a href="">
+        <img src="/img/profile.png" alt="" title="">
+      </a>
+
+      <h1>
+        <a href=""></a>
+      </h1>
+
+
+
+      <nav>
+        <ul class="list">
+
+
+              <li>
+                <a target="_self"
+                   href="/pages/about-me/#about-me">
+                  About Me
+                </a>
+              </li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-github" href="https://github.com/MikeThomsen" target="_blank">
+              <i class="fab fa-github"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-linkedin" href="https://www.linkedin.com/in/mike-thomsen-780341191" target="_blank">
+              <i class="fab fa-linkedin"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-stack-overflow" href="https://stackoverflow.com/users/284538/mike-thomsen" target="_blank">
+              <i class="fab fa-stack-overflow"></i>
+            </a>
+          </li>
+      </ul>
+    </div>
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="">Home</a>
+
+
+      <a href="/atom.xml">Atom</a>
+
+      <a href="/index.xml">RSS</a>
+    </nav>
+
+
+
+<article>
+  <header>
+    <h2><a href="/posts/2018/10/15/setting-up-janusgraph-locally-with-hbase/#setting-up-janusgraph-locally-with-hbase">Setting Up JanusGraph Locally (with HBase)</a></h2>
+    <p>
+      Posted on Mon 15 October 2018 in <a href="/category/tutorial">tutorial</a>
+
+          &#8226; Tagged with
+              <a href="/tag/nifi.html">nifi</a>,              <a href="/tag/graph.html">graph</a>,              <a href="/tag/hadoop.html">hadoop</a>
+    </p>
+  </header>
+  <div>
+      <h1>Setting Up JanusGraph Locally</h1>
+<h2>Setup HBase</h2>
+<ul>
+<li><a href="https://www.apache.org/dyn/closer.lua/hbase/1.2.7/hbase-1.2.7-bin.tar.gz">Download HBase</a></li>
+<li><code>tar -zxvf hbase-1.2.7-bin.tar.gz</code></li>
+<li><code>cd hbase-1.2.7-bin</code></li>
+<li><code>./bin/hbase master</code> (and wait about 5-12 seconds for it to finish starting)</li>
+</ul>
+<h2>Setup ElasticSearch</h2>
+<p><code>docker run --name es-janus -p 9200:9200 docker.elastic.co/elasticsearch/elasticsearch:6.4.2</code></p>
+<h2>Setup …</h2>
+        <br>
+        <a class="btn"
+           href="/posts/2018/10/15/setting-up-janusgraph-locally-with-hbase/#setting-up-janusgraph-locally-with-hbase">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="/posts/2018/05/07/hbase-visibility-labels/#hbase-visibility-labels">HBase Visibility Labels</a></h2>
+    <p>
+      Posted on Mon 07 May 2018 in <a href="/category/tutorial">tutorial</a>
+
+          &#8226; Tagged with
+              <a href="/tag/nifi.html">nifi</a>,              <a href="/tag/hadoop.html">hadoop</a>,              <a href="/tag/security.html">security</a>
+    </p>
+  </header>
+  <div>
+      <h1>HBase Visibility Labels</h1>
+<h3>Basic Terms</h3>
+<ul>
+<li>Visibility label - one or more tokens that may be combined with boolean logic to define restrictions on data access.</li>
+<li>Authorizations - one or more tokens that can be provided to HBase to evaluate against a visibility label.</li>
+</ul>
+<h3>Overview</h3>
+<p>Visibility labels are an expression that is stored …</p>
+        <br>
+        <a class="btn"
+           href="/posts/2018/05/07/hbase-visibility-labels/#hbase-visibility-labels">
+          Continue reading
+        </a>
+  </div>
+</article>
+
+  <div class="pagination">
+  </div>
+
+
+
+    <footer>
+<p>
+  &copy; 2020  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p><p>
+  <a rel="license"
+     href="http://creativecommons.org/licenses/by-sa/4.0/"
+     target="_blank">
+    <img alt="Creative Commons License"
+         title="Creative Commons License"
+         style="border-width:0"
+           src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png"
+         width="80"
+         height="15"/>
+  </a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Mike Thomsen's Blog ",
+  "url" : "",
+  "image": "",
+  "description": ""
+}
+</script>
+
+
+</body>
+</html>

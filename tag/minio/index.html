@@ -1,0 +1,172 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://mikethomsen.github.io/theme/stylesheet/style.min.css">
+
+    <link id="dark-theme-style" rel="stylesheet" type="text/css"
+    href="https://mikethomsen.github.io/theme/stylesheet/dark-theme.min.css">
+
+    <link id="pygments-dark-theme" rel="stylesheet" type="text/css"
+          href="https://mikethomsen.github.io/theme/pygments/monokai.min.css">
+
+
+  <link rel="stylesheet" type="text/css" href="https://mikethomsen.github.io/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://mikethomsen.github.io/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://mikethomsen.github.io/theme/font-awesome/css/solid.css">
+
+
+    <link href="https://mikethomsen.github.io/atom.xml" type="application/atom+xml" rel="alternate" title="Mike Thomsen's Blog Atom">
+
+    <link href="https://mikethomsen.github.io/index.xml" type="application/rss+xml" rel="alternate" title="Mike Thomsen's Blog RSS">
+
+
+
+
+    <meta name="author" content="Mike Thomsen" />
+    <meta name="description" content="" />
+<meta property="og:site_name" content="Mike Thomsen's Blog"/>
+<meta property="og:type" content="blog"/>
+<meta property="og:title" content="Mike Thomsen's Blog"/>
+<meta property="og:description" content=""/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://mikethomsen.github.io"/>
+
+  <title>Mike Thomsen's Blog &ndash; Tag minio</title>
+
+</head>
+<body class="dark-theme">
+  <aside>
+    <div>
+      <a href="https://mikethomsen.github.io">
+        <img src="https://mikethomsen.github.io/img/profile.png" alt="" title="">
+      </a>
+
+      <h1>
+        <a href="https://mikethomsen.github.io"></a>
+      </h1>
+
+
+
+      <nav>
+        <ul class="list">
+
+
+              <li>
+                <a target="_self"
+                   href="https://mikethomsen.github.io/pages/about-me/#about-me">
+                  About Me
+                </a>
+              </li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-github" href="https://github.com/MikeThomsen" target="_blank">
+              <i class="fab fa-github"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-linkedin" href="https://www.linkedin.com/in/mike-thomsen-780341191" target="_blank">
+              <i class="fab fa-linkedin"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-stack-overflow" href="https://stackoverflow.com/users/284538/mike-thomsen" target="_blank">
+              <i class="fab fa-stack-overflow"></i>
+            </a>
+          </li>
+      </ul>
+    </div>
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="https://mikethomsen.github.io">Home</a>
+
+
+      <a href="https://mikethomsen.github.io/atom.xml">Atom</a>
+
+      <a href="https://mikethomsen.github.io/index.xml">RSS</a>
+    </nav>
+
+
+
+<article>
+  <header>
+    <h2><a href="https://mikethomsen.github.io/posts/2019/02/18/using-the-s3-processors-with-minio/#using-the-s3-processors-with-minio">Using the S3 Processors with Minio</a></h2>
+    <p>
+      Posted on Mon 18 February 2019 in <a href="https://mikethomsen.github.io/category/tutorial">tutorial</a>
+
+          &#8226; Tagged with
+              <a href="https://mikethomsen.github.io/tag/aws">aws</a>,              <a href="https://mikethomsen.github.io/tag/minio">minio</a>,              <a href="https://mikethomsen.github.io/tag/s3">s3</a>,              <a href="https://mikethomsen.github.io/tag/nifi">nifi</a>
+    </p>
+  </header>
+  <div>
+      <p><a href="https://minio.io/">Minio</a> is a small S3-compatible server that can be really useful for internal use. To set it up with NiFi, <a href="https://minio.io/downloads.html">download</a> it an run it with this command:</p>
+<div class="highlight"><pre><span></span><code><span class="err">./minio server ./minio_data</span>
+</code></pre></div>
+
+<p>It will then print out some information that looks like this:</p>
+<div class="highlight"><pre><span></span><code><span class="n">Endpoint</span><span class="o">:</span>  <span class="n">http</span><span class="o">://</span><span class="mf">192.168</span><span class="o">.</span><span class="mf">1.151</span><span class="o">:</span><span class="mi">9000</span>  <span class="n">http …</span></code></pre></div>
+        <br>
+        <a class="btn"
+           href="https://mikethomsen.github.io/posts/2019/02/18/using-the-s3-processors-with-minio/#using-the-s3-processors-with-minio">
+          Continue reading
+        </a>
+  </div>
+</article>
+
+  <div class="pagination">
+  </div>
+
+
+
+    <footer>
+<p>
+  &copy; 2020  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p><p>
+  <a rel="license"
+     href="http://creativecommons.org/licenses/by-sa/4.0/"
+     target="_blank">
+    <img alt="Creative Commons License"
+         title="Creative Commons License"
+         style="border-width:0"
+           src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png"
+         width="80"
+         height="15"/>
+  </a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Mike Thomsen's Blog ",
+  "url" : "https://mikethomsen.github.io",
+  "image": "",
+  "description": ""
+}
+</script>
+
+
+</body>
+</html>

@@ -10,43 +10,45 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" type="text/css" href="/theme/stylesheet/style.min.css">
+    <link rel="stylesheet" type="text/css" href="https://mikethomsen.github.io/theme/stylesheet/style.min.css">
 
     <link id="dark-theme-style" rel="stylesheet" type="text/css"
-    href="/theme/stylesheet/dark-theme.min.css">
+    href="https://mikethomsen.github.io/theme/stylesheet/dark-theme.min.css">
 
     <link id="pygments-dark-theme" rel="stylesheet" type="text/css"
-          href="/theme/pygments/monokai.min.css">
+          href="https://mikethomsen.github.io/theme/pygments/monokai.min.css">
 
 
-  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/fontawesome.css">
-  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/brands.css">
-  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/solid.css">
+  <link rel="stylesheet" type="text/css" href="https://mikethomsen.github.io/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://mikethomsen.github.io/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://mikethomsen.github.io/theme/font-awesome/css/solid.css">
 
 
-    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Mike Thomsen's Blog Atom">
+    <link href="https://mikethomsen.github.io/atom.xml" type="application/atom+xml" rel="alternate" title="Mike Thomsen's Blog Atom">
 
-    <link href="/index.xml" type="application/rss+xml" rel="alternate" title="Mike Thomsen's Blog RSS">
+    <link href="https://mikethomsen.github.io/index.xml" type="application/rss+xml" rel="alternate" title="Mike Thomsen's Blog RSS">
 
 
 
 
 <meta name="author" content="Mike Thomsen" />
 <meta name="description" content="KSQL and Apache NiFi (Part I) If you haven&#39;t heard about KSQL, which is Confluent&#39;s new(ish) SQL engine built on top of Apache Kafka, check out some of these links: KSQL Product Page KSQL in Action Writing Streaming Queries against Kafka using KSQL So let&#39;s say you want to …" />
-<meta name="keywords" content="nifi">
+<meta name="keywords" content="nifi, kafka, data-engineering">
 
 
 <meta property="og:site_name" content="Mike Thomsen's Blog"/>
 <meta property="og:title" content="KSQL and Apache NiFi (Part I)"/>
 <meta property="og:description" content="KSQL and Apache NiFi (Part I) If you haven&#39;t heard about KSQL, which is Confluent&#39;s new(ish) SQL engine built on top of Apache Kafka, check out some of these links: KSQL Product Page KSQL in Action Writing Streaming Queries against Kafka using KSQL So let&#39;s say you want to …"/>
 <meta property="og:locale" content="en_US"/>
-<meta property="og:url" content="/posts/2018/05/07/ksql-and-apache-nifi-part-i/"/>
+<meta property="og:url" content="https://mikethomsen.github.io/posts/2018/05/07/ksql-and-apache-nifi-part-i/"/>
 <meta property="og:type" content="article"/>
 <meta property="article:published_time" content="2018-05-07 17:47:00-04:00"/>
 <meta property="article:modified_time" content=""/>
-<meta property="article:author" content="/author/mike-thomsen.html">
+<meta property="article:author" content="https://mikethomsen.github.io/author/mike-thomsen.html">
 <meta property="article:section" content="misc"/>
 <meta property="article:tag" content="nifi"/>
+<meta property="article:tag" content="kafka"/>
+<meta property="article:tag" content="data-engineering"/>
 <meta property="og:image" content="">
 
   <title>Mike Thomsen's Blog &ndash; KSQL and Apache NiFi (Part I)</title>
@@ -55,12 +57,12 @@
 <body class="dark-theme">
   <aside>
     <div>
-      <a href="">
-        <img src="/img/profile.png" alt="" title="">
+      <a href="https://mikethomsen.github.io">
+        <img src="https://mikethomsen.github.io/img/profile.png" alt="" title="">
       </a>
 
       <h1>
-        <a href=""></a>
+        <a href="https://mikethomsen.github.io"></a>
       </h1>
 
 
@@ -71,7 +73,7 @@
 
               <li>
                 <a target="_self"
-                   href="/pages/about-me/#about-me">
+                   href="https://mikethomsen.github.io/pages/about-me/#about-me">
                   About Me
                 </a>
               </li>
@@ -102,12 +104,12 @@
   <main>
 
     <nav>
-      <a href="">Home</a>
+      <a href="https://mikethomsen.github.io">Home</a>
 
 
-      <a href="/atom.xml">Atom</a>
+      <a href="https://mikethomsen.github.io/atom.xml">Atom</a>
 
-      <a href="/index.xml">RSS</a>
+      <a href="https://mikethomsen.github.io/index.xml">RSS</a>
     </nav>
 
 <article class="single">
@@ -115,7 +117,7 @@
       
     <h1 id="ksql-and-apache-nifi-part-i">KSQL and Apache NiFi (Part I)</h1>
     <p>
-      Posted on Mon 07 May 2018 in <a href="/category/misc.html">misc</a>
+      Posted on Mon 07 May 2018 in <a href="https://mikethomsen.github.io/category/misc">misc</a>
 
     </p>
   </header>
@@ -149,7 +151,9 @@
   </div>
   <div class="tag-cloud">
     <p>
-      <a href="/tag/nifi.html">nifi</a>
+      <a href="https://mikethomsen.github.io/tag/nifi">nifi</a>
+      <a href="https://mikethomsen.github.io/tag/kafka">kafka</a>
+      <a href="https://mikethomsen.github.io/tag/data-engineering">data-engineering</a>
     </p>
   </div>
 
@@ -187,7 +191,7 @@ Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a 
   "@context" : "http://schema.org",
   "@type" : "Blog",
   "name": " Mike Thomsen's Blog ",
-  "url" : "",
+  "url" : "https://mikethomsen.github.io",
   "image": "",
   "description": ""
 }

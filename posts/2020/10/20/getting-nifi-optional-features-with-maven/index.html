@@ -1,0 +1,246 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://mikethomsen.github.io/theme/stylesheet/style.min.css">
+
+    <link id="dark-theme-style" rel="stylesheet" type="text/css"
+    href="https://mikethomsen.github.io/theme/stylesheet/dark-theme.min.css">
+
+    <link id="pygments-dark-theme" rel="stylesheet" type="text/css"
+          href="https://mikethomsen.github.io/theme/pygments/monokai.min.css">
+
+
+  <link rel="stylesheet" type="text/css" href="https://mikethomsen.github.io/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://mikethomsen.github.io/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://mikethomsen.github.io/theme/font-awesome/css/solid.css">
+
+
+    <link href="https://mikethomsen.github.io/atom.xml" type="application/atom+xml" rel="alternate" title="Mike Thomsen's Blog Atom">
+
+    <link href="https://mikethomsen.github.io/index.xml" type="application/rss+xml" rel="alternate" title="Mike Thomsen's Blog RSS">
+
+
+
+
+<meta name="author" content="Mike Thomsen" />
+<meta name="description" content="The binaries that are available for download on the NiFi website only contain the most essential NAR files because the whole NiFi build is simply too large for many of our mirrors. Fortunately, you have multiple ways to get access to these binaries. You can download them from the Maven …" />
+<meta name="keywords" content="nifi, graph">
+
+
+<meta property="og:site_name" content="Mike Thomsen's Blog"/>
+<meta property="og:title" content="Getting NiFi optional features with Maven"/>
+<meta property="og:description" content="The binaries that are available for download on the NiFi website only contain the most essential NAR files because the whole NiFi build is simply too large for many of our mirrors. Fortunately, you have multiple ways to get access to these binaries. You can download them from the Maven …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://mikethomsen.github.io/posts/2020/10/20/getting-nifi-optional-features-with-maven/"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2020-10-20 11:01:00-04:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://mikethomsen.github.io/author/mike-thomsen.html">
+<meta property="article:section" content="tutorial"/>
+<meta property="article:tag" content="nifi"/>
+<meta property="article:tag" content="graph"/>
+<meta property="og:image" content="">
+
+  <title>Mike Thomsen's Blog &ndash; Getting NiFi optional features with Maven</title>
+
+</head>
+<body class="dark-theme">
+  <aside>
+    <div>
+      <a href="https://mikethomsen.github.io">
+        <img src="https://mikethomsen.github.io/img/profile.png" alt="" title="">
+      </a>
+
+      <h1>
+        <a href="https://mikethomsen.github.io"></a>
+      </h1>
+
+
+
+      <nav>
+        <ul class="list">
+
+
+              <li>
+                <a target="_self"
+                   href="https://mikethomsen.github.io/pages/about-me/#about-me">
+                  About Me
+                </a>
+              </li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-github" href="https://github.com/MikeThomsen" target="_blank">
+              <i class="fab fa-github"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-linkedin" href="https://www.linkedin.com/in/mike-thomsen-780341191" target="_blank">
+              <i class="fab fa-linkedin"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-stack-overflow" href="https://stackoverflow.com/users/284538/mike-thomsen" target="_blank">
+              <i class="fab fa-stack-overflow"></i>
+            </a>
+          </li>
+      </ul>
+    </div>
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="https://mikethomsen.github.io">Home</a>
+
+
+      <a href="https://mikethomsen.github.io/atom.xml">Atom</a>
+
+      <a href="https://mikethomsen.github.io/index.xml">RSS</a>
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="getting-nifi-optional-features-with-maven">Getting NiFi optional features with Maven</h1>
+    <p>
+      Posted on Tue 20 October 2020 in <a href="https://mikethomsen.github.io/category/tutorial">tutorial</a>
+
+    </p>
+  </header>
+
+
+  <div>
+    <p>The binaries that are available for download on the <a href="http://nifi.apache.org">NiFi website</a> only contain the most essential NAR files because the whole NiFi build is simply too large for many of our mirrors. Fortunately, you have multiple ways to get access to these binaries. You can download them from the <a href="http://search.maven.org">Maven Central Repository Search</a> manually, with a script or Maven project or you can build the whole project yourself.</p>
+<p>As of 1.12.1, the optional features not included are:</p>
+<ul>
+<li>Kafka 0.8 support</li>
+<li>Kafka 0.9 support</li>
+<li>The Elasticsearch 5 Transport API bundle (with good reason, the transport API was deprecated as a public client API!)</li>
+<li>The Graph Database Bundle</li>
+<li>The Rules Engine Bundle</li>
+<li>Hive 1 support</li>
+<li>Hive 3 support</li>
+<li>Apache Atlas Support</li>
+<li>Apache Accumulo Support</li>
+<li>SQL Reporting Bundle</li>
+</ul>
+<p>For automated builds, the Maven artifacts are cleanly listed in <a href="https://github.com/apache/nifi/blob/b442df58e2f1270589b25ab5575101bf2f9860f3/nifi-assembly/pom.xml#L776">nifi-assembly/pom</a>. The following is an example of a Maven POM that you can run to fetch the Graph Database Bundle (under the section <code>include-graph</code>):</p>
+<div class="highlight"><pre><span></span><code><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="nt">&lt;project</span> <span class="na">xmlns=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0&quot;</span> <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;modelVersion&gt;</span>4.0.0<span class="nt">&lt;/modelVersion&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>org.apache.nifi<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>nifi-contrib-assembly<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>1.0.0-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;name&gt;</span>NiFi Contrib Assembly<span class="nt">&lt;/name&gt;</span>
+  <span class="nt">&lt;packaging&gt;</span>pom<span class="nt">&lt;/packaging&gt;</span>
+  <span class="nt">&lt;description&gt;</span>Provides a bundle for all of the NiFi optional NARs<span class="nt">&lt;/description&gt;</span>
+  <span class="nt">&lt;properties&gt;</span>
+    <span class="nt">&lt;nifi.version&gt;</span>1.12.1<span class="nt">&lt;/nifi.version&gt;</span>
+  <span class="nt">&lt;/properties&gt;</span>
+  <span class="nt">&lt;dependencies&gt;</span>
+    <span class="nt">&lt;dependency&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>org.apache.nifi<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>nifi-graph-client-service-api-nar<span class="nt">&lt;/artifactId&gt;</span>
+      <span class="nt">&lt;version&gt;</span>${nifi.version}<span class="nt">&lt;/version&gt;</span>
+      <span class="nt">&lt;type&gt;</span>nar<span class="nt">&lt;/type&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+    <span class="nt">&lt;dependency&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>org.apache.nifi<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>nifi-neo4j-cypher-service-nar<span class="nt">&lt;/artifactId&gt;</span>
+      <span class="nt">&lt;version&gt;</span>${nifi.version}<span class="nt">&lt;/version&gt;</span>
+      <span class="nt">&lt;type&gt;</span>nar<span class="nt">&lt;/type&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+    <span class="nt">&lt;dependency&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>org.apache.nifi<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>nifi-graph-nar<span class="nt">&lt;/artifactId&gt;</span>
+      <span class="nt">&lt;version&gt;</span>${nifi.version}<span class="nt">&lt;/version&gt;</span>
+      <span class="nt">&lt;type&gt;</span>nar<span class="nt">&lt;/type&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+    <span class="nt">&lt;dependency&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>org.apache.nifi<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>nifi-other-graph-services-nar<span class="nt">&lt;/artifactId&gt;</span>
+      <span class="nt">&lt;version&gt;</span>${nifi.version}<span class="nt">&lt;/version&gt;</span>
+      <span class="nt">&lt;type&gt;</span>nar<span class="nt">&lt;/type&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+  <span class="nt">&lt;/dependencies&gt;</span>
+<span class="nt">&lt;/project&gt;</span>
+</code></pre></div>
+
+<p>And if you want to build a custom NiFi Docker image that brings in these NARS, it's this easy:</p>
+<div class="highlight"><pre><span></span><code><span class="k">FROM</span> <span class="s">maven:3</span> <span class="k">AS</span> <span class="s">build</span>
+
+<span class="k">COPY</span> pom.xml /tmp/pom.xml
+
+<span class="k">RUN</span> mvn -f /tmp/pom.xml dependency:resolve
+
+<span class="k">FROM</span> <span class="s">apache/nifi:1.12.1</span>
+
+<span class="k">COPY</span> --from<span class="o">=</span>build --chown<span class="o">=</span>nifi /root/.m2/repository/org/apache/nifi/nifi-graph-client-service-api-nar/1.12.1/nifi-graph-client-service-api-nar-1.12.1.nar /opt/nifi/nifi-current/lib/nifi-graph-client-service-api-nar-1.12.1.nar
+<span class="k">COPY</span> --from<span class="o">=</span>build --chown<span class="o">=</span>nifi /root/.m2/repository/org/apache/nifi/nifi-neo4j-cypher-service-nar/1.12.1/nifi-neo4j-cypher-service-nar-1.12.1.nar /opt/nifi/nifi-current/lib/nifi-neo4j-cypher-service-nar-1.12.1.nar
+<span class="k">COPY</span> --from<span class="o">=</span>build --chown<span class="o">=</span>nifi /root/.m2/repository/org/apache/nifi/nifi-graph-nar/1.12.1/nifi-graph-nar-1.12.1.nar /opt/nifi/nifi-current/lib/nifi-graph-nar-1.12.1.nar
+<span class="k">COPY</span> --from<span class="o">=</span>build --chown<span class="o">=</span>nifi /root/.m2/repository/org/apache/nifi/nifi-other-graph-services-nar/1.12.1/nifi-other-graph-services-nar-1.12.1.nar /opt/nifi/nifi-current/lib/nifi-other-graph-services-nar-1.12.1.nar
+</code></pre></div>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://mikethomsen.github.io/tag/nifi">nifi</a>
+      <a href="https://mikethomsen.github.io/tag/graph">graph</a>
+    </p>
+  </div>
+
+
+
+
+
+</article>
+
+    <footer>
+<p>
+  &copy; 2020  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p><p>
+  <a rel="license"
+     href="http://creativecommons.org/licenses/by-sa/4.0/"
+     target="_blank">
+    <img alt="Creative Commons License"
+         title="Creative Commons License"
+         style="border-width:0"
+           src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png"
+         width="80"
+         height="15"/>
+  </a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Mike Thomsen's Blog ",
+  "url" : "https://mikethomsen.github.io",
+  "image": "",
+  "description": ""
+}
+</script>
+
+
+</body>
+</html>

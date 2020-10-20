@@ -10,42 +10,45 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" type="text/css" href="/theme/stylesheet/style.min.css">
+    <link rel="stylesheet" type="text/css" href="https://mikethomsen.github.io/theme/stylesheet/style.min.css">
 
     <link id="dark-theme-style" rel="stylesheet" type="text/css"
-    href="/theme/stylesheet/dark-theme.min.css">
+    href="https://mikethomsen.github.io/theme/stylesheet/dark-theme.min.css">
 
     <link id="pygments-dark-theme" rel="stylesheet" type="text/css"
-          href="/theme/pygments/monokai.min.css">
+          href="https://mikethomsen.github.io/theme/pygments/monokai.min.css">
 
 
-  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/fontawesome.css">
-  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/brands.css">
-  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/solid.css">
+  <link rel="stylesheet" type="text/css" href="https://mikethomsen.github.io/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://mikethomsen.github.io/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://mikethomsen.github.io/theme/font-awesome/css/solid.css">
 
 
-    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Mike Thomsen's Blog Atom">
+    <link href="https://mikethomsen.github.io/atom.xml" type="application/atom+xml" rel="alternate" title="Mike Thomsen's Blog Atom">
 
-    <link href="/index.xml" type="application/rss+xml" rel="alternate" title="Mike Thomsen's Blog RSS">
+    <link href="https://mikethomsen.github.io/index.xml" type="application/rss+xml" rel="alternate" title="Mike Thomsen's Blog RSS">
 
 
 
 
 <meta name="author" content="Mike Thomsen" />
 <meta name="description" content="Why would you want to use NiFi to rip into Outlook PST files? Many reasons, ranging from helping with corporate legal compliance to forensics examinations. Perhaps even just to move email archives off the cloud and into an ElasticSearch cluster that is run by the local IT department to save …" />
-<meta name="keywords" content="">
+<meta name="keywords" content="nifi, forensics, email">
 
 
 <meta property="og:site_name" content="Mike Thomsen's Blog"/>
 <meta property="og:title" content="Extracting emails from PST files with Apache NiFi"/>
 <meta property="og:description" content="Why would you want to use NiFi to rip into Outlook PST files? Many reasons, ranging from helping with corporate legal compliance to forensics examinations. Perhaps even just to move email archives off the cloud and into an ElasticSearch cluster that is run by the local IT department to save …"/>
 <meta property="og:locale" content="en_US"/>
-<meta property="og:url" content="/posts/2018/11/16/extracting-emails-from-pst-files-with-apache-nifi/"/>
+<meta property="og:url" content="https://mikethomsen.github.io/posts/2018/11/16/extracting-emails-from-pst-files-with-apache-nifi/"/>
 <meta property="og:type" content="article"/>
 <meta property="article:published_time" content="2018-11-16 00:00:00-05:00"/>
 <meta property="article:modified_time" content=""/>
-<meta property="article:author" content="/author/mike-thomsen.html">
-<meta property="article:section" content="misc"/>
+<meta property="article:author" content="https://mikethomsen.github.io/author/mike-thomsen.html">
+<meta property="article:section" content="tutorial"/>
+<meta property="article:tag" content="nifi"/>
+<meta property="article:tag" content="forensics"/>
+<meta property="article:tag" content="email"/>
 <meta property="og:image" content="">
 
   <title>Mike Thomsen's Blog &ndash; Extracting emails from PST files with Apache NiFi</title>
@@ -54,12 +57,12 @@
 <body class="dark-theme">
   <aside>
     <div>
-      <a href="">
-        <img src="/img/profile.png" alt="" title="">
+      <a href="https://mikethomsen.github.io">
+        <img src="https://mikethomsen.github.io/img/profile.png" alt="" title="">
       </a>
 
       <h1>
-        <a href=""></a>
+        <a href="https://mikethomsen.github.io"></a>
       </h1>
 
 
@@ -70,7 +73,7 @@
 
               <li>
                 <a target="_self"
-                   href="/pages/about-me/#about-me">
+                   href="https://mikethomsen.github.io/pages/about-me/#about-me">
                   About Me
                 </a>
               </li>
@@ -101,12 +104,12 @@
   <main>
 
     <nav>
-      <a href="">Home</a>
+      <a href="https://mikethomsen.github.io">Home</a>
 
 
-      <a href="/atom.xml">Atom</a>
+      <a href="https://mikethomsen.github.io/atom.xml">Atom</a>
 
-      <a href="/index.xml">RSS</a>
+      <a href="https://mikethomsen.github.io/index.xml">RSS</a>
     </nav>
 
 <article class="single">
@@ -114,7 +117,7 @@
       
     <h1 id="extracting-emails-from-pst-files-with-apache-nifi">Extracting emails from PST files with Apache NiFi</h1>
     <p>
-      Posted on Fri 16 November 2018 in <a href="/category/misc.html">misc</a>
+      Posted on Fri 16 November 2018 in <a href="https://mikethomsen.github.io/category/tutorial">tutorial</a>
 
     </p>
   </header>
@@ -127,6 +130,9 @@
   </div>
   <div class="tag-cloud">
     <p>
+      <a href="https://mikethomsen.github.io/tag/nifi">nifi</a>
+      <a href="https://mikethomsen.github.io/tag/forensics">forensics</a>
+      <a href="https://mikethomsen.github.io/tag/email">email</a>
     </p>
   </div>
 
@@ -164,7 +170,7 @@ Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a 
   "@context" : "http://schema.org",
   "@type" : "Blog",
   "name": " Mike Thomsen's Blog ",
-  "url" : "",
+  "url" : "https://mikethomsen.github.io",
   "image": "",
   "description": ""
 }
