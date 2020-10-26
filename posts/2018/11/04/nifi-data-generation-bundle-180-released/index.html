@@ -29,7 +29,17 @@
     <link href="https://mikethomsen.github.io/index.xml" type="application/rss+xml" rel="alternate" title="Mike Thomsen's Blog RSS">
 
 
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
+  ga('create', 'G-6DRZR6X3LR', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
 
 <meta name="author" content="Mike Thomsen" />
 <meta name="description" content="Data generation bundle has been updated to support NiFi 1.8.0. The GenerateRecord processor now supports expression language, enabling scenarios like this: { &#34;name&#34;: &#34;UserStatus&#34;, &#34;type&#34;: &#34;record&#34;, &#34;fields&#34;: [ { &#34;name&#34;: &#34;login_status&#34;, &#34;type&#34;: { &#34;name&#34;: &#34;flag_enum&#34;, &#34;type&#34;: &#34;enum&#34;, &#34;symbols&#34;: [ &#34;LOGIN&#34;, &#34;LOGOUT&#34;, &#34;REJECTED&#34; ] } }, { &#34;name&#34;: &#34;timestamp&#34;, &#34;type&#34;: { &#34;type&#34;: &#34;long&#34;, &#34;logicalType&#34;: &#34;timestamp-millis&#34;, &#34;arg.properties&#34;: { &#34;range&#34;: { &#34;min …" />
