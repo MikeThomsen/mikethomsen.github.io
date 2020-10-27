@@ -38,6 +38,23 @@
 </script>
 
 
+<!-- Matomo -->
+<script type="text/javascript">
+  var _paq = window._paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="https://mikethomsen-github.matomo.cloud/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.src='//cdn.matomo.cloud/mikethomsen-github.matomo.cloud/matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<!-- End Matomo Code -->
+
+
 <meta name="author" content="Mike Thomsen" />
 <meta name="description" content="Docker Compose version: &#34;3&#34; services: elasticsearch: image: docker.elastic.co/elasticsearch/elasticsearch:6.4.2 container_name: elasticsearch ports: - 9200:9200 - 9300:9300 environment: - &#34;discovery.type=single-node&#34; - &#34;xpack.security.enabled=true&#34; kibana: image: docker.elastic.co/kibana/kibana:6.4.2 container_name: kibana environment: - &#34;elasticsearch.username=elastic&#34; - &#34;elasticsearch.password=changeme&#34; ports …" />
 <meta name="keywords" content="elastic, nifi, security">

@@ -38,6 +38,23 @@
 </script>
 
 
+<!-- Matomo -->
+<script type="text/javascript">
+  var _paq = window._paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="https://mikethomsen-github.matomo.cloud/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.src='//cdn.matomo.cloud/mikethomsen-github.matomo.cloud/matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<!-- End Matomo Code -->
+
+
 <meta name="author" content="Mike Thomsen" />
 <meta name="description" content="If you have a NiFi component that you work on for your business/team, you can make it searchable using the Searchable interface. The following code sample is taken from NIFI-4406, which makes ExecuteScript searchable so that you can search for words inside of either the script body property or …" />
 <meta name="keywords" content="nifi">

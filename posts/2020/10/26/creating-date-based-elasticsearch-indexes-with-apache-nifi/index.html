@@ -38,6 +38,23 @@
 </script>
 
 
+<!-- Matomo -->
+<script type="text/javascript">
+  var _paq = window._paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="https://mikethomsen-github.matomo.cloud/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.src='//cdn.matomo.cloud/mikethomsen-github.matomo.cloud/matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<!-- End Matomo Code -->
+
+
 <meta name="author" content="Mike Thomsen" />
 <meta name="description" content="One of the many cool features of Elasticsearch is that it is able to use a feature called Index Templates to create new indexes on the fly when you POST data to indexes that match a particular defined pattern. One of the reasons you&#39;d want to do this sort of …" />
 <meta name="keywords" content="elasticsearch, nifi">

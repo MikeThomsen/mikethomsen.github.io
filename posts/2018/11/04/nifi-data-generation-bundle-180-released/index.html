@@ -38,6 +38,23 @@
 </script>
 
 
+<!-- Matomo -->
+<script type="text/javascript">
+  var _paq = window._paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="https://mikethomsen-github.matomo.cloud/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.src='//cdn.matomo.cloud/mikethomsen-github.matomo.cloud/matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<!-- End Matomo Code -->
+
+
 <meta name="author" content="Mike Thomsen" />
 <meta name="description" content="Data generation bundle has been updated to support NiFi 1.8.0. The GenerateRecord processor now supports expression language, enabling scenarios like this: { &#34;name&#34;: &#34;UserStatus&#34;, &#34;type&#34;: &#34;record&#34;, &#34;fields&#34;: [ { &#34;name&#34;: &#34;login_status&#34;, &#34;type&#34;: { &#34;name&#34;: &#34;flag_enum&#34;, &#34;type&#34;: &#34;enum&#34;, &#34;symbols&#34;: [ &#34;LOGIN&#34;, &#34;LOGOUT&#34;, &#34;REJECTED&#34; ] } }, { &#34;name&#34;: &#34;timestamp&#34;, &#34;type&#34;: { &#34;type&#34;: &#34;long&#34;, &#34;logicalType&#34;: &#34;timestamp-millis&#34;, &#34;arg.properties&#34;: { &#34;range&#34;: { &#34;min …" />
 <meta name="keywords" content="nifi, data-engineering">
