@@ -12,11 +12,9 @@
 
     <link rel="stylesheet" type="text/css" href="https://mikethomsen.github.io/theme/stylesheet/style.min.css">
 
-    <link id="dark-theme-style" rel="stylesheet" type="text/css"
-    href="https://mikethomsen.github.io/theme/stylesheet/dark-theme.min.css">
 
-    <link id="pygments-dark-theme" rel="stylesheet" type="text/css"
-          href="https://mikethomsen.github.io/theme/pygments/monokai.min.css">
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="https://mikethomsen.github.io/theme/pygments/github.min.css">
 
 
   <link rel="stylesheet" type="text/css" href="https://mikethomsen.github.io/theme/font-awesome/css/fontawesome.css">
@@ -29,17 +27,16 @@
     <link href="https://mikethomsen.github.io/index.xml" type="application/rss+xml" rel="alternate" title="Mike Thomsen's Blog RSS">
 
 
-<!-- Google Analytics -->
-<script type="text/javascript">
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NFH70G3JS2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-  ga('create', 'G-6DRZR6X3LR', 'auto');
-  ga('send', 'pageview');
+  gtag('config', 'G-NFH70G3JS2');
 </script>
-<!-- End Google Analytics -->
+
 
     <meta name="author" content="Mike Thomsen" />
     <meta name="description" content="" />
@@ -53,7 +50,7 @@
   <title>Mike Thomsen's Blog &ndash; Tag nifi</title>
 
 </head>
-<body class="dark-theme">
+<body class="light-theme">
   <aside>
     <div>
       <a href="https://mikethomsen.github.io">
@@ -113,6 +110,26 @@
 
 
 
+<article>
+  <header>
+    <h2><a href="https://mikethomsen.github.io/posts/2020/10/26/creating-date-based-elasticsearch-indexes-with-apache-nifi/#creating-date-based-elasticsearch-indexes-with-apache-nifi">Creating date-based Elasticsearch indexes with Apache Nifi</a></h2>
+    <p>
+      Posted on Mon 26 October 2020 in <a href="https://mikethomsen.github.io/category/tutorial">tutorial</a>
+
+          &#8226; Tagged with
+              <a href="https://mikethomsen.github.io/tag/elasticsearch">elasticsearch</a>,              <a href="https://mikethomsen.github.io/tag/nifi">nifi</a>
+    </p>
+  </header>
+  <div>
+      <p>One of the many cool features of Elasticsearch is that it is able to use a feature called <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/index-templates.html">Index Templates</a> to create new indexes on the fly when you POST data to indexes that match a particular defined pattern. One of the reasons you'd want to do this sort of …</p>
+        <br>
+        <a class="btn"
+           href="https://mikethomsen.github.io/posts/2020/10/26/creating-date-based-elasticsearch-indexes-with-apache-nifi/#creating-date-based-elasticsearch-indexes-with-apache-nifi">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
 <article>
   <header>
     <h2><a href="https://mikethomsen.github.io/posts/2020/10/20/getting-nifi-optional-features-with-maven/#getting-nifi-optional-features-with-maven">Getting NiFi optional features with Maven</a></h2>
@@ -298,26 +315,6 @@
         <br>
         <a class="btn"
            href="https://mikethomsen.github.io/posts/2018/12/07/how-to-script-a-nifi-lookupservice/#how-to-script-a-nifi-lookupservice">
-          Continue reading
-        </a>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://mikethomsen.github.io/posts/2018/11/16/extracting-emails-from-pst-files-with-apache-nifi/#extracting-emails-from-pst-files-with-apache-nifi">Extracting emails from PST files with Apache NiFi</a></h2>
-    <p>
-      Posted on Fri 16 November 2018 in <a href="https://mikethomsen.github.io/category/tutorial">tutorial</a>
-
-          &#8226; Tagged with
-              <a href="https://mikethomsen.github.io/tag/nifi">nifi</a>,              <a href="https://mikethomsen.github.io/tag/forensics">forensics</a>,              <a href="https://mikethomsen.github.io/tag/email">email</a>
-    </p>
-  </header>
-  <div>
-      <p>Why would you want to use NiFi to rip into Outlook PST files? Many reasons, ranging from helping with corporate legal compliance to forensics examinations. Perhaps even just to move email archives off the cloud and into an ElasticSearch cluster that is run by the local IT department to save …</p>
-        <br>
-        <a class="btn"
-           href="https://mikethomsen.github.io/posts/2018/11/16/extracting-emails-from-pst-files-with-apache-nifi/#extracting-emails-from-pst-files-with-apache-nifi">
           Continue reading
         </a>
   </div>

@@ -1,0 +1,301 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://mikethomsen.github.io/theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="https://mikethomsen.github.io/theme/pygments/github.min.css">
+
+
+  <link rel="stylesheet" type="text/css" href="https://mikethomsen.github.io/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://mikethomsen.github.io/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://mikethomsen.github.io/theme/font-awesome/css/solid.css">
+
+
+    <link href="https://mikethomsen.github.io/atom.xml" type="application/atom+xml" rel="alternate" title="Mike Thomsen's Blog Atom">
+
+    <link href="https://mikethomsen.github.io/index.xml" type="application/rss+xml" rel="alternate" title="Mike Thomsen's Blog RSS">
+
+
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NFH70G3JS2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-NFH70G3JS2');
+</script>
+
+
+<meta name="author" content="Mike Thomsen" />
+<meta name="description" content="One of the many cool features of Elasticsearch is that it is able to use a feature called Index Templates to create new indexes on the fly when you POST data to indexes that match a particular defined pattern. One of the reasons you&#39;d want to do this sort of …" />
+<meta name="keywords" content="elasticsearch, nifi">
+
+
+<meta property="og:site_name" content="Mike Thomsen's Blog"/>
+<meta property="og:title" content="Creating date-based Elasticsearch indexes with Apache Nifi"/>
+<meta property="og:description" content="One of the many cool features of Elasticsearch is that it is able to use a feature called Index Templates to create new indexes on the fly when you POST data to indexes that match a particular defined pattern. One of the reasons you&#39;d want to do this sort of …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://mikethomsen.github.io/posts/2020/10/26/creating-date-based-elasticsearch-indexes-with-apache-nifi/"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2020-10-26 00:00:00-04:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://mikethomsen.github.io/author/mike-thomsen.html">
+<meta property="article:section" content="tutorial"/>
+<meta property="article:tag" content="elasticsearch"/>
+<meta property="article:tag" content="nifi"/>
+<meta property="og:image" content="">
+
+  <title>Mike Thomsen's Blog &ndash; Creating date-based Elasticsearch indexes with Apache Nifi</title>
+
+</head>
+<body class="light-theme">
+  <aside>
+    <div>
+      <a href="https://mikethomsen.github.io">
+        <img src="https://mikethomsen.github.io/img/profile.png" alt="" title="">
+      </a>
+
+      <h1>
+        <a href="https://mikethomsen.github.io"></a>
+      </h1>
+
+
+
+      <nav>
+        <ul class="list">
+
+
+              <li>
+                <a target="_self"
+                   href="https://mikethomsen.github.io/pages/about-me/#about-me">
+                  About Me
+                </a>
+              </li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-github" href="https://github.com/MikeThomsen" target="_blank">
+              <i class="fab fa-github"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-linkedin" href="https://www.linkedin.com/in/mike-thomsen-780341191" target="_blank">
+              <i class="fab fa-linkedin"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-stack-overflow" href="https://stackoverflow.com/users/284538/mike-thomsen" target="_blank">
+              <i class="fab fa-stack-overflow"></i>
+            </a>
+          </li>
+      </ul>
+    </div>
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="https://mikethomsen.github.io">Home</a>
+
+
+      <a href="https://mikethomsen.github.io/atom.xml">Atom</a>
+
+      <a href="https://mikethomsen.github.io/index.xml">RSS</a>
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="creating-date-based-elasticsearch-indexes-with-apache-nifi">Creating date-based Elasticsearch indexes with Apache Nifi</h1>
+    <p>
+      Posted on Mon 26 October 2020 in <a href="https://mikethomsen.github.io/category/tutorial">tutorial</a>
+
+    </p>
+  </header>
+
+
+  <div>
+    <p>One of the many cool features of Elasticsearch is that it is able to use a feature called <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/index-templates.html">Index Templates</a> to create new indexes on the fly when you POST data to indexes that match a particular defined pattern. One of the reasons you'd want to do this sort of setup is that you can target data range queries more accurately. For example, if you know a document might be between the last week of one month and the first week of another, you can specify the two month index that would satisfy it instead of one big index that would take longer to search.</p>
+<p>The following is an example of an index template for a simple message system:</p>
+<div class="highlight"><pre><span></span><code>PUT _template/messages
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+    <span class="nt">&quot;index_patterns&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;messages_*&quot;</span><span class="p">],</span>
+    <span class="nt">&quot;template&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;settings&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;number_of_replicas&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="nt">&quot;number_of_shards&quot;</span><span class="p">:</span> <span class="mi">1</span>
+        <span class="p">},</span>
+        <span class="nt">&quot;mappings&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="nt">&quot;from&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;keyword&quot;</span>
+                <span class="p">},</span>
+                <span class="nt">&quot;to&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;keyword&quot;</span>
+                <span class="p">},</span>
+                <span class="nt">&quot;message&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;text&quot;</span>
+                <span class="p">},</span>
+                <span class="nt">&quot;sent_on&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;date&quot;</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Now you are ready to create new message indexes such as <code>message_2020-10</code> that correspond to the months in which your messages arrived. The next step is to create an Avro schema for these messages:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;record&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;MessageRecord&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;fields&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;from&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;message&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;sent_on&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>So now you have a record schema that can take a JSON object like this:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+    <span class="nt">&quot;from&quot;</span><span class="p">:</span> <span class="s2">&quot;john.doe&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;to&quot;</span><span class="p">:</span> <span class="s2">&quot;jane.doe&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Hello, world&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;sent_on&quot;</span><span class="p">:</span> <span class="s2">&quot;2020-10-27 10:15:00&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>The reason why I chose to use a string instead of an avro logical type of <code>timestamp-millis</code> or <code>date</code> is because it makes mangling the date string easier. Originally, I tried to use <code>QueryRecord</code>, but that uses Apache Calcite and Calcite currently doesn't support date/timestap formatting functionality. So a string field is the path of least resistence here.</p>
+<p>The flow for all of this is pretty simple. It consists of a few operations:</p>
+<ol>
+<li><code>GetFile</code> to retrieve files from <code>/tmp/input</code>.</li>
+<li><code>UpdateAttribute</code> to add <code>schema.name</code> and set it to <code>message</code>, which is the name of the schema in the <code>AvroSchemaRegistry</code> that is used by the <code>JsonTreeReader</code>.</li>
+<li><code>PartitionRecord</code> partitions on <code>sent_on</code>.</li>
+<li><code>PutElasticsearchRecord</code> which reads the partition data and posts the data to Elasticsearch.</li>
+</ol>
+<p><img alt="Flow" src="/img/2020/10/partition-elasticsearch/flow.png"></p>
+<p>This is the configuration for <code>PartitionRecord</code>:</p>
+<p><img alt="PartitionRecord Configuration" src="/img/2020/10/partition-elasticsearch/partition_record.png"></p>
+<p>Now to generate some test data:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">from</span> <span class="nn">faker</span> <span class="kn">import</span> <span class="n">Faker</span>
+
+<span class="n">faker</span> <span class="o">=</span> <span class="n">Faker</span><span class="p">()</span>
+
+<span class="n">usernames</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">messages</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">500</span><span class="p">):</span>
+  <span class="n">usernames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">faker</span><span class="o">.</span><span class="n">user_name</span><span class="p">())</span>
+
+<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100000</span><span class="p">):</span>
+  <span class="n">year</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">2015</span><span class="p">,</span> <span class="mi">2020</span><span class="p">)</span>
+  <span class="n">month</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">))</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+  <span class="n">day</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">25</span><span class="p">))</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+  <span class="n">ts</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">year</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">month</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">day</span><span class="si">}</span><span class="s2"> 10:00:00&quot;</span>
+
+  <span class="n">left</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">usernames</span><span class="p">)</span>
+  <span class="n">right</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">usernames</span><span class="p">)</span>
+
+  <span class="k">if</span> <span class="n">left</span> <span class="o">==</span> <span class="n">right</span><span class="p">:</span>
+    <span class="k">while</span> <span class="n">right</span> <span class="o">==</span> <span class="n">left</span><span class="p">:</span>
+      <span class="n">right</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">usernames</span><span class="p">)</span>
+
+  <span class="n">msg</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="n">left</span><span class="p">,</span>
+    <span class="s2">&quot;to&quot;</span><span class="p">:</span> <span class="n">right</span><span class="p">,</span>
+    <span class="s2">&quot;sent_on&quot;</span><span class="p">:</span> <span class="n">ts</span><span class="p">,</span>
+    <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">faker</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+  <span class="p">}</span>
+
+  <span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;/tmp/input/messages.json&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">output</span><span class="p">:</span>
+  <span class="n">output</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">messages</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+</code></pre></div>
+
+<p>The entire flow can be downloaded as a NiFi template <a href="/artifacts/nifi/templates/Partition_Elastic.xml">here</a></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://mikethomsen.github.io/tag/elasticsearch">elasticsearch</a>
+      <a href="https://mikethomsen.github.io/tag/nifi">nifi</a>
+    </p>
+  </div>
+
+
+
+
+
+</article>
+
+    <footer>
+<p>
+  &copy; 2020  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p><p>
+  <a rel="license"
+     href="http://creativecommons.org/licenses/by-sa/4.0/"
+     target="_blank">
+    <img alt="Creative Commons License"
+         title="Creative Commons License"
+         style="border-width:0"
+           src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png"
+         width="80"
+         height="15"/>
+  </a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Mike Thomsen's Blog ",
+  "url" : "https://mikethomsen.github.io",
+  "image": "",
+  "description": ""
+}
+</script>
+
+
+</body>
+</html>
