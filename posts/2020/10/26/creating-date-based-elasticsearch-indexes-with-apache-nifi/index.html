@@ -224,6 +224,8 @@
 <p><img alt="Flow" src="/img/2020/10/partition-elasticsearch/flow.png"></p>
 <p>This is the configuration for <code>PartitionRecord</code>:</p>
 <p><img alt="PartitionRecord Configuration" src="/img/2020/10/partition-elasticsearch/partition_record.png"></p>
+<p>This is the configuration for <code>PutElasticsearchRecord</code>:</p>
+<p><img alt="PutElasticsearchRecord Configuration" src="/img/2020/10/partition-elasticsearch/PutElasticsearchRecord.png"></p>
 <p>Now to generate some test data:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">random</span>
@@ -265,6 +267,34 @@
 </code></pre></div>
 
 <p>The entire flow can be downloaded as a NiFi template <a href="/artifacts/nifi/templates/Partition_Elastic.xml">here</a></p>
+<p>For anyone who needs help with testing out Elasticsearch, the following Docker Compose configuration was used for testing:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">version</span><span class="p">:</span> <span class="s">&quot;3&quot;</span>
+<span class="nt">services</span><span class="p">:</span>
+  <span class="nt">elasticsearch</span><span class="p">:</span>
+    <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">docker.elastic.co/elasticsearch/elasticsearch:7.9.0</span>
+    <span class="nt">container_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">elasticsearch</span>
+    <span class="nt">hostname</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">elasticsearch</span>
+    <span class="nt">environment</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="s">&quot;discovery.type=single-node&quot;</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">ELASTICSEARCH_USERNAME=elastic</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">ELASTICSEARCH_PASSWORD=elastic</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">xpack.security.enabled=false</span>
+    <span class="nt">ports</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">9200:9200</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">9300:9300</span>
+  <span class="nt">kibana</span><span class="p">:</span>
+    <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">docker.elastic.co/kibana/kibana:7.9.0</span>
+    <span class="nt">container_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">kibana</span>
+    <span class="nt">environment</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">ELASTICSEARCH_URL=&quot;http://elasticsearch:9200&quot;</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">ELASTICSEARCH_USERNAME=elastic</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">ELASTICSEARCH_PASSWORD=elastic</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">xpack.security.enabled=false</span>
+    <span class="nt">ports</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">5601:5601</span>
+    <span class="nt">links</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">elasticsearch</span>
+</code></pre></div>
   </div>
   <div class="tag-cloud">
     <p>
