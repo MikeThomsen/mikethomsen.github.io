@@ -27,16 +27,6 @@
     <link href="https://mikethomsen.github.io/index.xml" type="application/rss+xml" rel="alternate" title="Mike Thomsen's Blog RSS">
 
 
-<!-- Global Site Tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-NFH70G3JS2"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-NFH70G3JS2');
-</script>
-
 
 <!-- Matomo -->
 <script type="text/javascript">
@@ -53,7 +43,6 @@
   })();
 </script>
 <!-- End Matomo Code -->
-
 
 <meta name="author" content="Mike Thomsen" />
 <meta name="description" content="Data generation bundle has been updated to support NiFi 1.8.0. The GenerateRecord processor now supports expression language, enabling scenarios like this: { &#34;name&#34;: &#34;UserStatus&#34;, &#34;type&#34;: &#34;record&#34;, &#34;fields&#34;: [ { &#34;name&#34;: &#34;login_status&#34;, &#34;type&#34;: { &#34;name&#34;: &#34;flag_enum&#34;, &#34;type&#34;: &#34;enum&#34;, &#34;symbols&#34;: [ &#34;LOGIN&#34;, &#34;LOGOUT&#34;, &#34;REJECTED&#34; ] } }, { &#34;name&#34;: &#34;timestamp&#34;, &#34;type&#34;: { &#34;type&#34;: &#34;long&#34;, &#34;logicalType&#34;: &#34;timestamp-millis&#34;, &#34;arg.properties&#34;: { &#34;range&#34;: { &#34;min …" />

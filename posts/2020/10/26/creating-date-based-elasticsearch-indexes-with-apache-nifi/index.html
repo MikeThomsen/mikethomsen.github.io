@@ -27,16 +27,6 @@
     <link href="https://mikethomsen.github.io/index.xml" type="application/rss+xml" rel="alternate" title="Mike Thomsen's Blog RSS">
 
 
-<!-- Global Site Tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-NFH70G3JS2"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-NFH70G3JS2');
-</script>
-
 
 <!-- Matomo -->
 <script type="text/javascript">
@@ -53,7 +43,6 @@
   })();
 </script>
 <!-- End Matomo Code -->
-
 
 <meta name="author" content="Mike Thomsen" />
 <meta name="description" content="One of the many cool features of Elasticsearch is that it is able to use a feature called Index Templates to create new indexes on the fly when you POST data to indexes that match a particular defined pattern. One of the reasons you&#39;d want to do this sort of …" />
@@ -147,7 +136,7 @@
 
 
   <div>
-    <p>One of the many cool features of Elasticsearch is that it is able to use a feature called <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/index-templates.html">Index Templates</a> to create new indexes on the fly when you POST data to indexes that match a particular defined pattern. One of the reasons you'd want to do this sort of setup is that you can target data range queries more accurately. For example, if you know a document might be between the last week of one month and the first week of another, you can specify the two month index that would satisfy it instead of one big index that would take longer to search.</p>
+    <p>One of the many cool features of Elasticsearch is that it is able to use a feature called <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/index-templates.html">Index Templates</a> to create new indexes on the fly when you POST data to indexes that match a particular defined pattern. One of the reasons you'd want to do this sort of setup is that you can target data range queries more accurately. For example, if you know a document might be between the last week of one month and the first week of another, you can specify the two indexes that would satisfy it instead of one big index that would take longer to search.</p>
 <p>The following is an example of an index template for a simple message system:</p>
 <div class="highlight"><pre><span></span><code>PUT _template/messages
 </code></pre></div>
