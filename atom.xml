@@ -13,7 +13,7 @@
 &lt;/ul&gt;
 &lt;p&gt;Put all three of them in either &lt;code&gt;$NIFI/lib&lt;/code&gt; or &lt;code&gt;$NIFI/extensions&lt;/code&gt;. There's a dependency chain there, so it's probably best to put them in &lt;code&gt;lib&lt;/code&gt; and restart NiFi.&lt;/p&gt;
 &lt;p&gt;The easiest Gremlin-enabled database that I know of is &lt;a href="http://janusgraph.org"&gt;JanusGraph&lt;/a&gt;, so here's how you get started with a really simple Docker image of that.&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;docker run -p 8182:8182 --name test-janusgraph -d janusgraph/janusgraph:latest&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;docker run -e JANUS_PROPS_TEMPLATE=berkeleyje-lucene -p 8182:8182 --name test-janusgraph -d janusgraph/janusgraph:latest&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Give that a few seconds for JanusGraph to start up, and open a gremlin connection with the Gremlin client.&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;docker exec -it test-janusgraph bin/gremlin.sh&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Once the Gremlin console is running, set up a remote connection like this:&lt;/p&gt;
