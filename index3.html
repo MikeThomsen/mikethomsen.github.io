@@ -118,6 +118,44 @@
 
 <article>
   <header>
+    <h2><a href="https://mikethomsen.github.io/posts/2018/10/11/setting-up-elasticsearch-document-level-security/#setting-up-elasticsearch-document-level-security">Setting up Elasticsearch Document-Level Security</a></h2>
+    <p>
+      Posted on Thu 11 October 2018 in <a href="https://mikethomsen.github.io/category/tutorial">tutorial</a>
+
+          &#8226; Tagged with
+              <a href="https://mikethomsen.github.io/tag/elastic">elastic</a>,              <a href="https://mikethomsen.github.io/tag/nifi">nifi</a>,              <a href="https://mikethomsen.github.io/tag/security">security</a>
+    </p>
+  </header>
+  <div>
+      <h2>Docker Compose</h2>
+<div class="highlight"><pre><span></span><code><span class="c">version: &quot;3&quot;</span>
+<span class="c">services:</span>
+<span class="c">  elasticsearch:</span>
+<span class="c">    image: docker.elastic.co/elasticsearch/elasticsearch:6.4.2</span>
+<span class="c">    container_name: elasticsearch</span>
+<span class="c">    ports:</span>
+<span class="c">      - 9200:9200</span>
+<span class="c">      - 9300:9300</span>
+<span class="c">    environment:</span>
+<span class="c">      - &quot;discovery.type=single-node&quot;</span>
+<span class="c">      - &quot;xpack.security.enabled=true&quot;</span>
+<span class="c">  kibana:</span>
+<span class="c">    image: docker.elastic.co/kibana/kibana:6.4.2</span>
+<span class="c">    container_name: kibana</span>
+<span class="c">    environment:</span>
+<span class="c">      - &quot;elasticsearch.username=elastic&quot;</span>
+<span class="c">      - &quot;elasticsearch.password=changeme&quot;</span>
+<span class="c">    ports …</span></code></pre></div>
+        <br>
+        <a class="btn"
+           href="https://mikethomsen.github.io/posts/2018/10/11/setting-up-elasticsearch-document-level-security/#setting-up-elasticsearch-document-level-security">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://mikethomsen.github.io/posts/2018/05/10/building-pdfs-with-apache-nifi/#building-pdfs-with-apache-nifi">Building PDFS with Apache Nifi</a></h2>
     <p>
       Posted on Thu 10 May 2018 in <a href="https://mikethomsen.github.io/category/tutorial">tutorial</a>
