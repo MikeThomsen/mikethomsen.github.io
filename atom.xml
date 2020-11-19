@@ -1,5 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Mike Thomsen's Blog</title><link href="https://mikethomsen.github.io/" rel="alternate"></link><link href="https://mikethomsen.github.io/atom.xml" rel="self"></link><id>https://mikethomsen.github.io/</id><updated>2020-11-16T16:32:00-05:00</updated><entry><title>S230, the two-faced "free speech law"</title><link href="https://mikethomsen.github.io/posts/2020/11/16/s230-the-two-faced-free-speech-law/" rel="alternate"></link><published>2020-11-16T16:32:00-05:00</published><updated>2020-11-16T16:32:00-05:00</updated><author><name>Mike Thomsen</name></author><id>tag:mikethomsen.github.io,2020-11-16:/posts/2020/11/16/s230-the-two-faced-free-speech-law/</id><summary type="html">&lt;p&gt;Disclaimer: IANAL, and I don't pretend to play one on YouTube.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Mike Thomsen's Blog</title><link href="https://mikethomsen.github.io/" rel="alternate"></link><link href="https://mikethomsen.github.io/atom.xml" rel="self"></link><id>https://mikethomsen.github.io/</id><updated>2020-11-19T16:18:00-05:00</updated><entry><title>Building all new record sets with ScriptedTransformRecord</title><link href="https://mikethomsen.github.io/posts/2020/11/19/building-all-new-record-sets-with-scriptedtransformrecord/" rel="alternate"></link><published>2020-11-19T16:18:00-05:00</published><updated>2020-11-19T16:18:00-05:00</updated><author><name>Mike Thomsen</name></author><id>tag:mikethomsen.github.io,2020-11-19:/posts/2020/11/19/building-all-new-record-sets-with-scriptedtransformrecord/</id><summary type="html">&lt;p&gt;Nifi 1.12.0 introduced the &lt;code&gt;ScriptedTransformRecord&lt;/code&gt; processor, which is similar to &lt;code&gt;ExecuteScript&lt;/code&gt;, but designed around record data. It provides a very slick and easy to use environment to cleanup and mutate record sets in a performant way on those use cases which require more than what something like &lt;code&gt;UpdateRecord …&lt;/code&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;Nifi 1.12.0 introduced the &lt;code&gt;ScriptedTransformRecord&lt;/code&gt; processor, which is similar to &lt;code&gt;ExecuteScript&lt;/code&gt;, but designed around record data. It provides a very slick and easy to use environment to cleanup and mutate record sets in a performant way on those use cases which require more than what something like &lt;code&gt;UpdateRecord&lt;/code&gt; can provide.&lt;/p&gt;
+&lt;p&gt;Recently, I discovered an easy way to use this processor to transform one record into another. We had a use case where we needed to generate two Parquet data sets, with one being mutated from the other. The solution for that was to add a &lt;code&gt;ScriptedTransformRecord&lt;/code&gt; processor immediately after we merged multiple smaller Avro record sets and have &lt;code&gt;ScriptedTransformRecord&lt;/code&gt; completely rewrite the data using a new schema. Here is an example of how that worked:&lt;/p&gt;
+&lt;h3&gt;Input Schema&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;UserRecord&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;namespace&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;com.mycompany.nifi&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;type&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;record&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;fields&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+        &lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="nt"&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;FullName&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+            &lt;span class="nt"&gt;&amp;quot;type&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;string&amp;quot;&lt;/span&gt;
+        &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h3&gt;Output Schema&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;SplitUserRecord&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;namespace&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;com.mycompany.nifi&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;type&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;record&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;fields&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+        &lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="nt"&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;FirstName&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+            &lt;span class="nt"&gt;&amp;quot;type&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;string&amp;quot;&lt;/span&gt;
+        &lt;span class="p"&gt;},&lt;/span&gt;
+        &lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="nt"&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;LastName&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+            &lt;span class="nt"&gt;&amp;quot;type&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;string&amp;quot;&lt;/span&gt;
+        &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;The script is a little more complicated than a basic &lt;code&gt;ScriptedTransformRecord&lt;/code&gt; support script, as it requires the creation of a fat jar to inject a compiled, static version of the NiFi &lt;code&gt;RecordSchema&lt;/code&gt; object into the script's context. Here is an example:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;static&lt;/span&gt; &lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;mycompany&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;nifi&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;ScriptUtil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;SCHEMA&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.apache.nifi.serialization.record.MapRecord&lt;/span&gt;
+
+&lt;span class="kt"&gt;def&lt;/span&gt; &lt;span class="n"&gt;nameParts&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;record&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getValue&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;FullName&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;).&lt;/span&gt;&lt;span class="na"&gt;split&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;/[\s]{1,}/&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="kt"&gt;def&lt;/span&gt; &lt;span class="n"&gt;values&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;
+    &lt;span class="nl"&gt;FirstName:&lt;/span&gt; &lt;span class="n"&gt;nameParts&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;],&lt;/span&gt;
+    &lt;span class="nl"&gt;LastName:&lt;/span&gt; &lt;span class="n"&gt;nameParts&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;span class="o"&gt;]&lt;/span&gt;
+
+&lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="nf"&gt;MapRecord&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;SCHEMA&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;values&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;The &lt;code&gt;ScriptUtil&lt;/code&gt; class is just a very simple Java class that looks like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;package&lt;/span&gt; &lt;span class="nn"&gt;com.mycompany.nifi&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.apache.nifi.avro.AvroTypeUtil&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.apache.nifi.serialization.record.RecordSchema&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;ScriptUtil&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;static&lt;/span&gt; &lt;span class="kd"&gt;final&lt;/span&gt; &lt;span class="n"&gt;RecordSchema&lt;/span&gt; &lt;span class="n"&gt;SCHEMA&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+    &lt;span class="kd"&gt;static&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;SCHEMA&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;AvroTypeUtil&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;createSchema&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;mycompany&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;nifi&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;SplitUserRecord&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;SCHEMA$&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h3&gt;Flow Overview&lt;/h3&gt;
+&lt;p&gt;&lt;img alt="Flow" src="/img/2020/11/scriptedtransformrecord-fatjar/flow.png"&gt;&lt;/p&gt;
+&lt;h3&gt;GenerateFlowFile Configuration&lt;/h3&gt;
+&lt;p&gt;&lt;img alt="GenerateFlowFile Configuration" src="/img/2020/11/scriptedtransformrecord-fatjar/generateflowfile.png"&gt;&lt;/p&gt;
+&lt;h3&gt;ScriptedTransformRecord Configuration&lt;/h3&gt;
+&lt;p&gt;&lt;img alt="ScriptedTransformRecord Configuration" src="/img/2020/11/scriptedtransformrecord-fatjar/scriptedtransformrecord.png"&gt;&lt;/p&gt;
+&lt;h3&gt;Transformation Output&lt;/h3&gt;
+&lt;p&gt;&lt;img alt="Output" src="/img/2020/11/scriptedtransformrecord-fatjar/output.png"&gt;&lt;/p&gt;
+&lt;p&gt;The full repository, including the flow template, can be found &lt;a href="https://github.com/MikeThomsen/scriptedtransformrecord-fatjar-demo"&gt;here&lt;/a&gt;.&lt;/p&gt;</content><category term="tutorial"></category><category term="nifi"></category><category term="scripting"></category><category term="scriptedtransformrecord"></category></entry><entry><title>S230, the two-faced "free speech law"</title><link href="https://mikethomsen.github.io/posts/2020/11/16/s230-the-two-faced-free-speech-law/" rel="alternate"></link><published>2020-11-16T16:32:00-05:00</published><updated>2020-11-16T16:32:00-05:00</updated><author><name>Mike Thomsen</name></author><id>tag:mikethomsen.github.io,2020-11-16:/posts/2020/11/16/s230-the-two-faced-free-speech-law/</id><summary type="html">&lt;p&gt;Disclaimer: IANAL, and I don't pretend to play one on YouTube.&lt;/p&gt;
 &lt;p&gt;S230 is supposed to be the great protector of free speech, and it has contributed a lot to that effect. However, its defenders often gloss over the fact that it is ultimately a regulation on censorship and liability, not …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Disclaimer: IANAL, and I don't pretend to play one on YouTube.&lt;/p&gt;
 &lt;p&gt;S230 is supposed to be the great protector of free speech, and it has contributed a lot to that effect. However, its defenders often gloss over the fact that it is ultimately a regulation on censorship and liability, not a full-throated defense of anything resembling free speech. That's by design because S230 was not part of a full-throated defense of free speech, but part of a law aimed at driving the American Internet as close as legal possible to a "G-rated" content system.&lt;/p&gt;
 &lt;p&gt;The law itself has &lt;strong&gt;two&lt;/strong&gt; important components: a portion which formally declares--sensibly--that the platform is not the speaker and not liable for the speech on it under many circumstances. It actually carves out many examples including criminal law so things like the many criminal havens on the Dark Web could not cite it in their defense. The other part is a near free-for-all permission from Uncle Sam to nuke nearly any bad content free from civil liability.&lt;/p&gt;
