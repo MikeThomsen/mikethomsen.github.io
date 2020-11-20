@@ -118,6 +118,29 @@
 
 <article>
   <header>
+    <h2><a href="https://mikethomsen.github.io/posts/2020/11/20/how-to-use-scriptedtransformrecord-to-simplify-bulk-data-cleanup/#how-to-use-scriptedtransformrecord-to-simplify-bulk-data-cleanup">How to use ScriptedTransformRecord to simplify bulk data cleanup</a></h2>
+    <p>
+      Posted on Fri 20 November 2020 in <a href="https://mikethomsen.github.io/category/tutorial">tutorial</a>
+
+          &#8226; Tagged with
+              <a href="https://mikethomsen.github.io/tag/nifi">nifi</a>,              <a href="https://mikethomsen.github.io/tag/scripting">scripting</a>,              <a href="https://mikethomsen.github.io/tag/scriptedtransformrecord">scriptedtransformrecord</a>
+    </p>
+  </header>
+  <div>
+      <p>Apache NiFi 1.12.0 introduced the new <code>ScriptedTransformRecord</code> processor, which is basically <code>ExecuteScript</code> focused on reprocessing record sets. It's a very powerful new tool for rapidly transforming and cleaning up data.</p>
+<p>The structure of a script that works with it is very simple:</p>
+<div class="highlight"><pre><span></span><code><span class="n">record</span><span class="o">.</span><span class="na">setValue</span><span class="o">(</span><span class="s2">&quot;SomeField&quot;</span><span class="o">,</span> <span class="s2">&quot;myValue&quot;</span><span class="o">)</span>
+<span class="n">record</span> <span class="c1">//Returns …</span></code></pre></div>
+        <br>
+        <a class="btn"
+           href="https://mikethomsen.github.io/posts/2020/11/20/how-to-use-scriptedtransformrecord-to-simplify-bulk-data-cleanup/#how-to-use-scriptedtransformrecord-to-simplify-bulk-data-cleanup">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://mikethomsen.github.io/posts/2020/11/19/building-all-new-record-sets-with-scriptedtransformrecord/#building-all-new-record-sets-with-scriptedtransformrecord">Building all new record sets with ScriptedTransformRecord</a></h2>
     <p>
       Posted on Thu 19 November 2020 in <a href="https://mikethomsen.github.io/category/tutorial">tutorial</a>
@@ -302,26 +325,6 @@
         <br>
         <a class="btn"
            href="https://mikethomsen.github.io/posts/2019/06/27/making-nifi-components-searchable/#making-nifi-components-searchable">
-          Continue reading
-        </a>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://mikethomsen.github.io/posts/2019/03/20/announcing-the-apache-nifi-test-harness/#announcing-the-apache-nifi-test-harness">Announcing the Apache NiFi Test Harness</a></h2>
-    <p>
-      Posted on Wed 20 March 2019 in <a href="https://mikethomsen.github.io/category/tutorial">tutorial</a>
-
-          &#8226; Tagged with
-              <a href="https://mikethomsen.github.io/tag/nifi">nifi</a>
-    </p>
-  </header>
-  <div>
-      <p><a href="https://github.com/peter-gergely-horvath/">Peter Horvath</a> provided us with a great new feature pull request that adds a test harness for running a live NiFi instance within a JUnit integration test. For now, the feature is only officially included in the unreleased 1.10.0-SNAPSHOT code on GitHub, but I put out a stable …</p>
-        <br>
-        <a class="btn"
-           href="https://mikethomsen.github.io/posts/2019/03/20/announcing-the-apache-nifi-test-harness/#announcing-the-apache-nifi-test-harness">
           Continue reading
         </a>
   </div>

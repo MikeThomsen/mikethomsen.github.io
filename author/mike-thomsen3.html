@@ -118,6 +118,46 @@
 
 <article>
   <header>
+    <h2><a href="https://mikethomsen.github.io/posts/2018/11/04/nifi-data-generation-bundle-180-released/#nifi-data-generation-bundle-180-released">NiFi Data Generation Bundle 1.8.0 Released</a></h2>
+    <p>
+      Posted on Sun 04 November 2018 in <a href="https://mikethomsen.github.io/category/tutorial">tutorial</a>
+
+          &#8226; Tagged with
+              <a href="https://mikethomsen.github.io/tag/nifi">nifi</a>,              <a href="https://mikethomsen.github.io/tag/data-engineering">data-engineering</a>
+    </p>
+  </header>
+  <div>
+      <p>Data generation bundle has been updated to support NiFi 1.8.0. The GenerateRecord processor now supports expression language, enabling scenarios like this:</p>
+<div class="highlight"><pre><span></span><code>{
+  &quot;name&quot;: &quot;UserStatus&quot;,
+  &quot;type&quot;: &quot;record&quot;,
+  &quot;fields&quot;: [
+    {
+      &quot;name&quot;: &quot;login_status&quot;,
+      &quot;type&quot;: {
+        &quot;name&quot;: &quot;flag_enum&quot;,
+        &quot;type&quot;: &quot;enum&quot;,
+        &quot;symbols&quot;: [ &quot;LOGIN&quot;, &quot;LOGOUT&quot;, &quot;REJECTED&quot; ]
+      }
+    },
+    {
+      &quot;name&quot;: &quot;timestamp&quot;,
+      &quot;type&quot;: {
+        &quot;type&quot;: &quot;long&quot;,
+        &quot;logicalType&quot;: &quot;timestamp-millis&quot;,
+        &quot;arg.properties&quot;: {
+          &quot;range&quot;: {
+            &quot;min …</code></pre></div>
+        <br>
+        <a class="btn"
+           href="https://mikethomsen.github.io/posts/2018/11/04/nifi-data-generation-bundle-180-released/#nifi-data-generation-bundle-180-released">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://mikethomsen.github.io/posts/2018/10/15/setting-up-janusgraph-locally-with-hbase/#setting-up-janusgraph-locally-with-hbase">Setting Up JanusGraph Locally (with HBase)</a></h2>
     <p>
       Posted on Mon 15 October 2018 in <a href="https://mikethomsen.github.io/category/tutorial">tutorial</a>

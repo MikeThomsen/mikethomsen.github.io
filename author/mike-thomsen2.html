@@ -118,6 +118,27 @@
 
 <article>
   <header>
+    <h2><a href="https://mikethomsen.github.io/posts/2019/08/16/containerizing-nifi-etl-processes/#containerizing-nifi-etl-processes">Containerizing NiFi ETL processes</a></h2>
+    <p>
+      Posted on Fri 16 August 2019 in <a href="https://mikethomsen.github.io/category/tutorial">tutorial</a>
+
+          &#8226; Tagged with
+              <a href="https://mikethomsen.github.io/tag/nifi">nifi</a>,              <a href="https://mikethomsen.github.io/tag/containers">containers</a>,              <a href="https://mikethomsen.github.io/tag/docker">docker</a>
+    </p>
+  </header>
+  <div>
+      <h2>Disclaimer</h2>
+<p>The preferred approach to managing NiFi in most cases is through the <a href="https://nifi.apache.org/registry.html">NiFi Registry</a>. It's an awesome tool that puts a lot of really powerful change management tools into your hands for developing, snapshotting and promoting flows between environments. The purpose of this blog post isn't to recommend an …</p>
+        <br>
+        <a class="btn"
+           href="https://mikethomsen.github.io/posts/2019/08/16/containerizing-nifi-etl-processes/#containerizing-nifi-etl-processes">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://mikethomsen.github.io/posts/2019/06/27/making-nifi-components-searchable/#making-nifi-components-searchable">Making NiFi components searchable</a></h2>
     <p>
       Posted on Thu 27 June 2019 in <a href="https://mikethomsen.github.io/category/tutorial">tutorial</a>
@@ -297,46 +318,6 @@
         <br>
         <a class="btn"
            href="https://mikethomsen.github.io/posts/2018/11/16/extracting-emails-from-pst-files-with-apache-nifi/#extracting-emails-from-pst-files-with-apache-nifi">
-          Continue reading
-        </a>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://mikethomsen.github.io/posts/2018/11/04/nifi-data-generation-bundle-180-released/#nifi-data-generation-bundle-180-released">NiFi Data Generation Bundle 1.8.0 Released</a></h2>
-    <p>
-      Posted on Sun 04 November 2018 in <a href="https://mikethomsen.github.io/category/tutorial">tutorial</a>
-
-          &#8226; Tagged with
-              <a href="https://mikethomsen.github.io/tag/nifi">nifi</a>,              <a href="https://mikethomsen.github.io/tag/data-engineering">data-engineering</a>
-    </p>
-  </header>
-  <div>
-      <p>Data generation bundle has been updated to support NiFi 1.8.0. The GenerateRecord processor now supports expression language, enabling scenarios like this:</p>
-<div class="highlight"><pre><span></span><code>{
-  &quot;name&quot;: &quot;UserStatus&quot;,
-  &quot;type&quot;: &quot;record&quot;,
-  &quot;fields&quot;: [
-    {
-      &quot;name&quot;: &quot;login_status&quot;,
-      &quot;type&quot;: {
-        &quot;name&quot;: &quot;flag_enum&quot;,
-        &quot;type&quot;: &quot;enum&quot;,
-        &quot;symbols&quot;: [ &quot;LOGIN&quot;, &quot;LOGOUT&quot;, &quot;REJECTED&quot; ]
-      }
-    },
-    {
-      &quot;name&quot;: &quot;timestamp&quot;,
-      &quot;type&quot;: {
-        &quot;type&quot;: &quot;long&quot;,
-        &quot;logicalType&quot;: &quot;timestamp-millis&quot;,
-        &quot;arg.properties&quot;: {
-          &quot;range&quot;: {
-            &quot;min …</code></pre></div>
-        <br>
-        <a class="btn"
-           href="https://mikethomsen.github.io/posts/2018/11/04/nifi-data-generation-bundle-180-released/#nifi-data-generation-bundle-180-released">
           Continue reading
         </a>
   </div>

@@ -1,5 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Mike Thomsen's Blog</title><link href="https://mikethomsen.github.io/" rel="alternate"></link><link href="https://mikethomsen.github.io/atom.xml" rel="self"></link><id>https://mikethomsen.github.io/</id><updated>2020-11-19T16:18:00-05:00</updated><entry><title>Building all new record sets with ScriptedTransformRecord</title><link href="https://mikethomsen.github.io/posts/2020/11/19/building-all-new-record-sets-with-scriptedtransformrecord/" rel="alternate"></link><published>2020-11-19T16:18:00-05:00</published><updated>2020-11-19T16:18:00-05:00</updated><author><name>Mike Thomsen</name></author><id>tag:mikethomsen.github.io,2020-11-19:/posts/2020/11/19/building-all-new-record-sets-with-scriptedtransformrecord/</id><summary type="html">&lt;p&gt;Nifi 1.12.0 introduced the &lt;code&gt;ScriptedTransformRecord&lt;/code&gt; processor, which is similar to &lt;code&gt;ExecuteScript&lt;/code&gt;, but designed around record data. It provides a very slick and easy to use environment to cleanup and mutate record sets in a performant way on those use cases which require more than what something like &lt;code&gt;UpdateRecord …&lt;/code&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;Nifi 1.12.0 introduced the &lt;code&gt;ScriptedTransformRecord&lt;/code&gt; processor, which is similar to &lt;code&gt;ExecuteScript&lt;/code&gt;, but designed around record data. It provides a very slick and easy to use environment to cleanup and mutate record sets in a performant way on those use cases which require more than what something like &lt;code&gt;UpdateRecord&lt;/code&gt; can provide.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Mike Thomsen's Blog</title><link href="https://mikethomsen.github.io/" rel="alternate"></link><link href="https://mikethomsen.github.io/atom.xml" rel="self"></link><id>https://mikethomsen.github.io/</id><updated>2020-11-20T15:19:00-05:00</updated><entry><title>How to use ScriptedTransformRecord to simplify bulk data cleanup</title><link href="https://mikethomsen.github.io/posts/2020/11/20/how-to-use-scriptedtransformrecord-to-simplify-bulk-data-cleanup/" rel="alternate"></link><published>2020-11-20T15:19:00-05:00</published><updated>2020-11-20T15:19:00-05:00</updated><author><name>Mike Thomsen</name></author><id>tag:mikethomsen.github.io,2020-11-20:/posts/2020/11/20/how-to-use-scriptedtransformrecord-to-simplify-bulk-data-cleanup/</id><summary type="html">&lt;p&gt;Apache NiFi 1.12.0 introduced the new &lt;code&gt;ScriptedTransformRecord&lt;/code&gt; processor, which is basically &lt;code&gt;ExecuteScript&lt;/code&gt; focused on reprocessing record sets. It's a very powerful new tool for rapidly transforming and cleaning up data.&lt;/p&gt;
+&lt;p&gt;The structure of a script that works with it is very simple:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;record&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setValue&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;SomeField&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;myValue&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;record&lt;/span&gt; &lt;span class="c1"&gt;//Returns …&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;Apache NiFi 1.12.0 introduced the new &lt;code&gt;ScriptedTransformRecord&lt;/code&gt; processor, which is basically &lt;code&gt;ExecuteScript&lt;/code&gt; focused on reprocessing record sets. It's a very powerful new tool for rapidly transforming and cleaning up data.&lt;/p&gt;
+&lt;p&gt;The structure of a script that works with it is very simple:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;record&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setValue&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;SomeField&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;myValue&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;record&lt;/span&gt; &lt;span class="c1"&gt;//Returns the record object at the end of the processing&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Many of us have run into situations where we get a lot of data sets with different date formats used all over the place. This is a common situation that leads to a lot of complexity, but this processor makes it really easy to fix. Here's an example:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;MessageRecord&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;namespace&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;com.mycompany.nifi&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;type&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;record&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;fields&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+        &lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="nt"&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Message&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+            &lt;span class="nt"&gt;&amp;quot;type&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;string&amp;quot;&lt;/span&gt;
+        &lt;span class="p"&gt;},&lt;/span&gt;
+        &lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="nt"&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;From&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+            &lt;span class="nt"&gt;&amp;quot;type&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;string&amp;quot;&lt;/span&gt;
+        &lt;span class="p"&gt;},&lt;/span&gt;
+        &lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="nt"&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;To&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+            &lt;span class="nt"&gt;&amp;quot;type&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;string&amp;quot;&lt;/span&gt;
+        &lt;span class="p"&gt;},&lt;/span&gt;
+        &lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="nt"&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;SentDate&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+            &lt;span class="nt"&gt;&amp;quot;type&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;string&amp;quot;&lt;/span&gt;
+        &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;And then this input:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;[&lt;/span&gt;
+    &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="nt"&gt;&amp;quot;Message&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Hello, world&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="nt"&gt;&amp;quot;From&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Jane Doe&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="nt"&gt;&amp;quot;To&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;John Doe&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="nt"&gt;&amp;quot;SentDate&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;11/20/2020 13:00:00&amp;quot;&lt;/span&gt;
+    &lt;span class="p"&gt;},&lt;/span&gt;
+    &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="nt"&gt;&amp;quot;Message&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Goodbye, cruel world&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="nt"&gt;&amp;quot;From&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;John Doe&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="nt"&gt;&amp;quot;To&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Jane Doe&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="nt"&gt;&amp;quot;SentDate&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;2020-11-30 1:05:00 PM&amp;quot;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;This little script would be able to parse the date strings and standardize them:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;java.text.SimpleDateFormat&lt;/span&gt;
+
+&lt;span class="kt"&gt;def&lt;/span&gt; &lt;span class="n"&gt;OUT&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;SimpleDateFormat&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;yyyy-mm-dd&amp;#39;T&amp;#39;HH:mm:ssZ&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="kt"&gt;def&lt;/span&gt; &lt;span class="n"&gt;DATEZ&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;
+    &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="nf"&gt;SimpleDateFormat&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;yyyy-MM-dd h:mm:ss a&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;),&lt;/span&gt;
+    &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="nf"&gt;SimpleDateFormat&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;MM/dd/yyyy HH:mm:ss&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;]&lt;/span&gt;
+
+&lt;span class="kt"&gt;def&lt;/span&gt; &lt;span class="n"&gt;sentDate&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;record&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getValue&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;SentDate&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="kt"&gt;def&lt;/span&gt; &lt;span class="n"&gt;reprocessed&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt;
+&lt;span class="n"&gt;DATEZ&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;each&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt; &lt;span class="n"&gt;formatter&lt;/span&gt; &lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(!&lt;/span&gt;&lt;span class="n"&gt;reprocessed&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;try&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="n"&gt;reprocessed&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;formatter&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;parse&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sentDate&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="k"&gt;catch&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Exception&lt;/span&gt; &lt;span class="n"&gt;ex&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+
+        &lt;span class="o"&gt;}&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
+
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;reprocessed&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;record&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setValue&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;SentDate&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;OUT&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;format&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;reprocessed&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt;
+    &lt;span class="n"&gt;record&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="c1"&gt;//On else, don&amp;#39;t return the &amp;quot;record&amp;quot; object so it&amp;#39;s removed from the outgoing data set.&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;And now, the output:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Result set" src="/img/2020/11/scriptedtransformrecord-dates/results.png"&gt;&lt;/p&gt;</content><category term="tutorial"></category><category term="nifi"></category><category term="scripting"></category><category term="scriptedtransformrecord"></category></entry><entry><title>Building all new record sets with ScriptedTransformRecord</title><link href="https://mikethomsen.github.io/posts/2020/11/19/building-all-new-record-sets-with-scriptedtransformrecord/" rel="alternate"></link><published>2020-11-19T16:18:00-05:00</published><updated>2020-11-19T16:18:00-05:00</updated><author><name>Mike Thomsen</name></author><id>tag:mikethomsen.github.io,2020-11-19:/posts/2020/11/19/building-all-new-record-sets-with-scriptedtransformrecord/</id><summary type="html">&lt;p&gt;Nifi 1.12.0 introduced the &lt;code&gt;ScriptedTransformRecord&lt;/code&gt; processor, which is similar to &lt;code&gt;ExecuteScript&lt;/code&gt;, but designed around record data. It provides a very slick and easy to use environment to cleanup and mutate record sets in a performant way on those use cases which require more than what something like &lt;code&gt;UpdateRecord …&lt;/code&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;Nifi 1.12.0 introduced the &lt;code&gt;ScriptedTransformRecord&lt;/code&gt; processor, which is similar to &lt;code&gt;ExecuteScript&lt;/code&gt;, but designed around record data. It provides a very slick and easy to use environment to cleanup and mutate record sets in a performant way on those use cases which require more than what something like &lt;code&gt;UpdateRecord&lt;/code&gt; can provide.&lt;/p&gt;
 &lt;p&gt;Recently, I discovered an easy way to use this processor to transform one record into another. We had a use case where we needed to generate two Parquet data sets, with one being mutated from the other. The solution for that was to add a &lt;code&gt;ScriptedTransformRecord&lt;/code&gt; processor immediately after we merged multiple smaller Avro record sets and have &lt;code&gt;ScriptedTransformRecord&lt;/code&gt; completely rewrite the data using a new schema. Here is an example of how that worked:&lt;/p&gt;
 &lt;h3&gt;Input Schema&lt;/h3&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;{&lt;/span&gt;
