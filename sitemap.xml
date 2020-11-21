@@ -145,6 +145,10 @@
 <changefreq>monthly</changefreq>
 <priority>0.50</priority>
 </url><url>
+<loc>https://mikethomsen.github.io/pages/projects/</loc>
+<changefreq>monthly</changefreq>
+<priority>0.50</priority>
+</url><url>
 <loc>https://mikethomsen.github.io/category/misc</loc>
 <lastmod>2018-05-07</lastmod>
 <changefreq>monthly</changefreq>
